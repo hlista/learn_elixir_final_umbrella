@@ -9,4 +9,13 @@ defmodule LearnElixirFinal.RiotClient do
       e -> e
     end
   end
+
+  def get_match_ids(region, puuid, start, count \\ 20) do
+    url = "https://#{region}.api.riotgames.com/lol/match/v5/matches/by-puuid/#{puuid}/ids?start=#{start}&count=#{count}&api_key=#{@api_key}"
+    case HttpQueue.enqueue(url) do
+      {:ok, %{status: 200, body: body}} ->
+        Jason.decode(body)
+      e -> e
+    end
+  end
 end
