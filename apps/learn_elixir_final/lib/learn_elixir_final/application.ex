@@ -1,0 +1,22 @@
+defmodule LearnElixirFinal.Application do
+  # See https://hexdocs.pm/elixir/Application.html
+  # for more information on OTP Applications
+  @moduledoc false
+
+  use Application
+
+  @impl true
+  def start(_type, _args) do
+    children = [
+      LearnElixirFinal.Repo,
+      {DNSCluster, query: Application.get_env(:learn_elixir_final, :dns_cluster_query) || :ignore},
+      {Phoenix.PubSub, name: LearnElixirFinal.PubSub},
+      # Start the Finch HTTP client for sending emails
+      {Finch, name: LearnElixirFinal.Finch}
+      # Start a worker by calling: LearnElixirFinal.Worker.start_link(arg)
+      # {LearnElixirFinal.Worker, arg}
+    ]
+
+    Supervisor.start_link(children, strategy: :one_for_one, name: LearnElixirFinal.Supervisor)
+  end
+end
