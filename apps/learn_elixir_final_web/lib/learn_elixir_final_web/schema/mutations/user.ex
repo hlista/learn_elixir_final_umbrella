@@ -15,7 +15,5 @@ defmodule LearnElixerFinalWeb.Schema.Mutations.User do
       arg :email, non_null(:string)
       arg :password, non_null(:string)
     end
-
-
   end
 end
