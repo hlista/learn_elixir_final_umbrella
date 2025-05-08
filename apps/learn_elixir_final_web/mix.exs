@@ -58,7 +58,9 @@ defmodule LearnElixirFinalWeb.MixProject do
       {:gettext, "~> 0.20"},
       {:learn_elixir_final, in_umbrella: true},
       {:jason, "~> 1.2"},
-      {:bandit, "~> 1.5"}
+      {:bandit, "~> 1.5"},
+      {:absinthe, "~> 1.7"},
+      {:dataloader, "~> 1.0.0"}
     ]
   end
 
