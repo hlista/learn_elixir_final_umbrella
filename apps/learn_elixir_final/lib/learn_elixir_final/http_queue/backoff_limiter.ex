@@ -14,6 +14,10 @@ defmodule LearnElixirFinal.HttpQueue.BackoffLimiter do
     GenServer.cast(@name, {:rate_limited, retry_after})
   end
 
+  def backoff_ms do
+    GenServer.call(@name, :backoff_ms)
+  end
+
   # Internal State
   def init(_) do
     {:ok, %{backoff_until: nil}}
@@ -30,6 +34,11 @@ defmodule LearnElixirFinal.HttpQueue.BackoffLimiter do
     else
       {:reply, false, state}
     end
+  end
+
+  def handle_call(:backoff_ms, _from, %{backoff_until: backoff_until} = state) do
+    backoff_ms = trunc((backoff_until - now()))
+    {:reply, backoff_ms, state}
   end
 
   def handle_cast({:rate_limited, retry_after}, state) do

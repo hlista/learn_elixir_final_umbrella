@@ -13,7 +13,7 @@ defmodule LearnElixirFinal.Auth.User do
                  LearnElixirFinal.League.LeagueAccount,
                  join_through: LearnElixirFinal.League.UserLeagueAccount,
                  join_keys: [user_id: :id, league_account_id: :id]
-    has_many :match_participants, through [:league_accounts, :match_participants]
+    has_many :match_participants, through: [:league_accounts, :match_participants]
     timestamps()
   end
 

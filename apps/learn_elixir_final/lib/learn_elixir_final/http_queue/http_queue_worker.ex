@@ -1,14 +1,22 @@
 defmodule LearnElixirFinal.HttpQueue.HttpQueueWorker do
   alias LearnElixirFinal.HttpQueue.BackoffLimiter
 
-  def run(url, from_pid) do
+  @max_retries 5
+
+  def run(%{method: method, url: url, headers: headers, body: body, opts: opts, client: client, retries: retries} = req, from_pid) do
     case BackoffLimiter.allow?() do
       true ->
-        case Finch.build(:get, url) |> Finch.request(LearnElixirFinal.Finch) do
+        case client.request(method, url, headers, body, opts) do
           {:ok, %{status: 429, headers: headers}} ->
             retry_after = get_retry_after(headers)
             BackoffLimiter.notify_429(retry_after)
-            send(from_pid, {:http_response, {:error, :rate_limited}})
+            if retries < @max_retries do
+              sleep_ms = retry_after
+              Process.sleep(sleep_ms)
+              run(%{req | retries: retries + 1}, from_pid)
+            else
+              send(from_pid, {:http_response, {:error, :max_retries_exceeded}})
+            end
           {:ok, response} ->
             send(from_pid, {:http_response, {:ok, response}})
           {:error, reason} ->
@@ -16,7 +24,14 @@ defmodule LearnElixirFinal.HttpQueue.HttpQueueWorker do
         end
 
       false ->
-        send(from_pid, {:http_response, {:error, :backoff_active}})
+        # Backoff active — wait then retry
+        retry_after = BackoffLimiter.backoff_ms()
+        if retries < @max_retries do
+          Process.sleep(retry_after)
+          run(%{req | retries: retries + 1}, from_pid)
+        else
+          send(from_pid, {:http_response, {:error, :max_retries_exceeded}})
+        end
     end
   end
 

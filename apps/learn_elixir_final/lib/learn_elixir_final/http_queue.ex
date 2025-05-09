@@ -7,8 +7,9 @@ defmodule LearnElixirFinal.HttpQueue do
 
   def start_link(_), do: GenServer.start_link(__MODULE__, %{queue: :queue.new(), active: 0}, name: __MODULE__)
 
-  def enqueue(url) do
-    GenServer.cast(__MODULE__, {:enqueue, url, self()})
+  def enqueue_request(%{method: _, url: _, headers: _, body: _, opts: _, client: _} = req) do
+    req = Map.put(req, :retries, 0)
+    GenServer.cast(__MODULE__, {:enqueue, req, self()})
     receive do
       {:http_response, result} -> result
     after
@@ -18,17 +19,17 @@ defmodule LearnElixirFinal.HttpQueue do
 
   def init(state), do: {:ok, state}
 
-  def handle_cast({:enqueue, url, from_pid}, %{queue: _q, active: n} = state) when n < @concurrency do
-    spawn_worker(url, from_pid)
+  def handle_cast({:enqueue, req, from_pid}, %{queue: _q, active: n} = state) when n < @concurrency do
+    spawn_worker(req, from_pid)
     {:noreply, %{state | active: n + 1}}
   end
 
-  def handle_cast({:enqueue, url, from_pid}, %{queue: q, active: n} = state) do
+  def handle_cast({:enqueue, req, from_pid}, %{queue: q, active: n} = state) do
     if :queue.len(q) >= @queue_limit do
       send(from_pid, {:http_response, {:error, :queue_full}})
       {:noreply, state}
     else
-      {:noreply, %{state | queue: :queue.in({url, from_pid}, q)}}
+      {:noreply, %{state | queue: :queue.in({req, from_pid}, q)}}
     end
   end
 
@@ -43,9 +44,9 @@ defmodule LearnElixirFinal.HttpQueue do
     end
   end
 
-  defp spawn_worker(url, from_pid) do
+  defp spawn_worker(req, from_pid) do
     Task.start(fn ->
-      HttpQueueWorker.run(url, from_pid)
+      HttpQueueWorker.run(req, from_pid)
       send(__MODULE__, {:worker_done})
     end)
   end
