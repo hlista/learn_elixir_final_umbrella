@@ -43,7 +43,8 @@ defmodule LearnElixirFinal.MixProject do
       {:jason, "~> 1.2"},
       {:swoosh, "~> 1.5"},
       {:finch, "~> 0.13"},
-      {:mox, "~> 1.1", only: :test}
+      {:mox, "~> 1.1", only: :test},
+      {:gen_stage, "~> 1.0.0"},
     ]
   end
 
