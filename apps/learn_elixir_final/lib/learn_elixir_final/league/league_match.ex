@@ -2,7 +2,7 @@ defmodule LearnElixirFinal.League.LeagueMatch do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @required_fields [:match_id]
+  @required_fields [:match_id, :region]
   @available_fields [
     :game_duration,
     :game_end_timestamp,
@@ -12,6 +12,7 @@ defmodule LearnElixirFinal.League.LeagueMatch do
 
   schema "league_matches" do
     field :match_id, :string
+    field :region, :string
     field :game_duration, :integer
     field :game_end_timestamp, :integer
     field :game_id, :integer

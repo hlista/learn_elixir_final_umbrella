@@ -33,4 +33,20 @@ defmodule LearnElixirFinal.RiotClient do
       e -> e
     end
   end
+
+  def get_match(region, match_id) do
+    req = %{
+      method: :get,
+      url: "https://#{region}.api.riotgames.com/lol/match/v5/matches/#{match_id}?api_key=#{@api_key}",
+      headers: [],
+      body: "",
+      opts: [],
+      client: RealHttpClient
+    }
+    case HttpQueue.enqueue_request(req) do
+      {:ok, %{status: 200, body: body}} ->
+        Jason.decode(body)
+      e -> e
+    end
+  end
 end

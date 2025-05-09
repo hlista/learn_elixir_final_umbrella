@@ -17,28 +17,28 @@ defmodule LearnElixirFinal.League.MatchParticipant do
     field :champ_experience, :integer
     field :champ_level, :integer
     field :champion_name, :string
-    field :damageDealtToBuildings, :integer
-    field :damageDealtToObjectives, :integer
-    field :damageDealtToTurrets, :integer
-    field :damageSelfMitigated, :integer
+    field :damage_dealt_to_buildings, :integer
+    field :damage_dealt_to_objectives, :integer
+    field :damage_dealt_to_turrets, :integer
+    field :damage_self_mitigated, :integer
     field :deaths, :integer
-    field :goldEarned, :integer
-    field :goldSpent, :integer
+    field :gold_earned, :integer
+    field :gold_spent, :integer
     field :kills, :integer
-    field :largestKillingSpree, :integer
-    field :largestMultiKill, :integer
-    field :magicDamageDealt, :integer
-    field :magicDamageDealtToChampions, :integer
-    field :magicDamageTaken, :integer
-    field :physicalDamageDealt, :integer
-    field :physicalDamageDealtToChampions, :integer
-    field :physicalDamageTaken, :integer
-    field :totalDamageDealt, :integer
-    field :totalDamageDealtToChampions, :integer
-    field :totalDamageTaken, :integer
-    field :totalHeal, :integer
-    field :totalMinionsKilled, :integer
-    field :totalTimeSpentDead, :integer
+    field :largest_killing_spree, :integer
+    field :largest_multi_kill, :integer
+    field :magic_damage_dealt, :integer
+    field :magic_damage_dealt_to_champions, :integer
+    field :magic_damage_taken, :integer
+    field :physical_damage_dealt, :integer
+    field :physical_damage_dealt_to_champions, :integer
+    field :physical_damage_taken, :integer
+    field :total_damage_dealt, :integer
+    field :total_damage_dealt_to_champions, :integer
+    field :total_damage_taken, :integer
+    field :total_heal, :integer
+    field :total_minions_killed, :integer
+    field :total_time_spent_dead, :integer
     field :win, :boolean
     belongs_to :league_match, LearnElixirFinal.League.LeagueMatch
     timestamps()

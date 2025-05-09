@@ -41,7 +41,7 @@ defmodule LearnElixirFinal.LeagueAccountWorker do
     |> Stream.chunk_every(100)
     |> Stream.each(fn chunk_of_match_ids ->
       chunk_of_match_ids
-      |> Enum.map(&(%{match_id: &1}))
+      |> Enum.map(&(%{match_id: &1, region: region}))
       |> Leagues.insert_all_league_matches()
     end)
   end
