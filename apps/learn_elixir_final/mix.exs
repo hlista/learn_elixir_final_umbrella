@@ -45,6 +45,7 @@ defmodule LearnElixirFinal.MixProject do
       {:finch, "~> 0.13"},
       {:mox, "~> 1.1", only: :test},
       {:gen_stage, "~> 1.0.0"},
+      {:oban, "~> 2.19"}
     ]
   end
 

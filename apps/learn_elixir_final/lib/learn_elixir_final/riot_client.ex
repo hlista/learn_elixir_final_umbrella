@@ -1,5 +1,5 @@
 defmodule LearnElixirFinal.RiotClient do
-  @api_key "RGAPI-f4a6853c-171d-4d0e-b226-ea0a48fdf704"
+  @api_key "RGAPI-9c48c3b4-384c-4aa6-8152-9b85a7837457"
   alias LearnElixirFinal.HttpQueue
   alias LearnElixirFinal.RealHttpClient
   def get_account_by_riot_id(region, game_name, tag_line) do
