@@ -1,25 +1,14 @@
 defmodule LearnElixirFinal.LeagueAccountWorker do
-  use Oban.Worker, queue: :league_accounts
+  use Oban.Worker,
+    queue: :league_accounts,
+    max_attempts: 10,
+    unique: [period: 300, states: [:available, :scheduled, :executing]]
+
   alias LearnElixirFinal.RiotClient
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: league_account}) do
-    with {:ok, updated_league_account} <-
-        populate_puuid(league_account) do
-      populate_matches(updated_league_account)
-    end
-  end
-
-  defp populate_puuid(%{
-    id: id,
-    region: region,
-    tag_line: tag_line,
-    game_name: game_name
-  }) do
-    with {:ok, %{"puuid" => puuid}} <-
-        RiotClient.get_account_by_riot_id(region, game_name, tag_line) do
-      Leagues.update_league_account(id, %{puuid: puuid})
-    end
+    populate_matches(league_account)
   end
 
   defp populate_matches(%{
@@ -40,9 +29,17 @@ defmodule LearnElixirFinal.LeagueAccountWorker do
     )
     |> Stream.chunk_every(100)
     |> Stream.each(fn chunk_of_match_ids ->
-      chunk_of_match_ids
+      {_, matches} = chunk_of_match_ids
       |> Enum.map(&(%{match_id: &1, region: region}))
-      |> Leagues.insert_all_league_matches()
+      |> Leagues.insert_all_league_matches([returning: true])
+      LearnElixirFinal.LeagueMatchWorker.queue_many_matches(matches)
     end)
+    |> Stream.run()
+  end
+
+  def queue_account(league_account) do
+    league_account
+    |> LearnElixirFinal.LeagueAccountWorker.new()
+    |> Oban.insert()
   end
 end

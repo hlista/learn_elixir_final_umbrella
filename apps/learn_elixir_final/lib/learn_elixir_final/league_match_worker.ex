@@ -1,5 +1,8 @@
 defmodule LearnElixirFinal.LeagueMatchWorker do
-  use Oban.Worker, queue: :league_matches
+  use Oban.Worker,
+    queue: :league_matches,
+    max_attempts: 10,
+    unique: [period: 300, states: [:available, :scheduled, :executing]]
   alias LearnElixirFinal.RiotClient
 
   @impl Oban.Worker
@@ -65,5 +68,11 @@ defmodule LearnElixirFinal.LeagueMatchWorker do
       }
     end)
     |> Leagues.insert_all_match_participants()
+  end
+
+  def queue_many_matches(league_matches) do
+    league_matches
+    |> Enum.map(&LearnElixirFinal.LeagueMatchWorker.new(&1))
+    |> Oban.insert_all()
   end
 end
