@@ -5,6 +5,7 @@ defmodule LearnElixirFinal.LeagueAccountWorker do
     unique: [period: 300, states: [:available, :scheduled, :executing]]
 
   alias LearnElixirFinal.RiotClient
+  alias LearnElixirFinal.Leagues
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: league_account}) do
@@ -29,9 +30,9 @@ defmodule LearnElixirFinal.LeagueAccountWorker do
     )
     |> Stream.chunk_every(100)
     |> Stream.each(fn chunk_of_match_ids ->
-      {_, matches} = chunk_of_match_ids
+      matches = chunk_of_match_ids
       |> Enum.map(&(%{match_id: &1, region: region}))
-      |> Leagues.insert_all_league_matches([returning: true])
+      |> Leagues.find_or_create_many_league_match()
       LearnElixirFinal.LeagueMatchWorker.queue_many_matches(matches)
     end)
     |> Stream.run()

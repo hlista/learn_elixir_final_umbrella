@@ -28,7 +28,7 @@ defmodule LearnElixirFinal.League.LeagueMatch do
   @doc false
   def changeset(preference, attrs) do
     preference
-    |> cast(attrs, @required_fields)
-    |> validate_required(@available_fields)
+    |> cast(attrs, @available_fields)
+    |> validate_required(@required_fields)
   end
 end

@@ -13,6 +13,9 @@ import Config
 config :learn_elixir_final,
   ecto_repos: [LearnElixirFinal.Repo]
 
+config :ecto_shorts,
+  repo: LearnElixirFinal.Repo,
+  error_module: EctoShorts.Actions.Error
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
