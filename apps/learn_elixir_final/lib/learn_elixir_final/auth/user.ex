@@ -7,8 +7,9 @@ defmodule LearnElixirFinal.Auth.User do
 
   schema "users" do
     field :email, :string
-    field :password, :string
-    field :enabled, :boolean
+    field :password, :string, virtual: true, redact: true
+    field :password_digest, :string, redact: true
+    field :enabled, :boolean, default: false
     many_to_many :league_accounts,
                  LearnElixirFinal.League.LeagueAccount,
                  join_through: LearnElixirFinal.League.UserLeagueAccount,
