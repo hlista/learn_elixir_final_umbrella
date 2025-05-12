@@ -9,6 +9,7 @@ defmodule LearnElixirFinalPg.Repo.Migrations.CreateLeagueMatchesTable do
       add :game_end_timestamp, :integer
       add :game_id, :integer
       add :game_name, :string
+      add :participants, {:array, :string}
       timestamps()
     end
     create unique_index("league_matches", [:match_id])

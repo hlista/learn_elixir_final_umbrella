@@ -26,7 +26,8 @@ defmodule LearnElixirFinal.LeagueEventWorker.LeagueAccountAddedEvent do
     Stream.resource(
       fn -> match_offset end,
       fn cursor ->
-        case  RiotClient.get_match_ids(match_region, puuid, cursor, 100) do
+        case  RiotClient.get_account_match_ids(match_region, puuid, cursor, 100) do
+          {:ok, []} -> {:halt, cursor}
           {:ok, matches} -> {matches, cursor + length(matches)}
           _ -> {:halt, cursor}
         end

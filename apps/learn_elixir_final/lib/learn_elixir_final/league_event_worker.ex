@@ -65,9 +65,19 @@ defmodule LearnElixirFinal.LeagueEventWorker do
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{
     "event" => @league_match_added_event,
-    "match_id" => match_id,
-    "region" => region
+    "league_match_id" => league_match_id
   }}) do
-
+    with {:ok, %{
+      league_match: league_match
+    }} <- LeagueMatchAddedEvent.populate_match_info(league_match_id) do
+      league_match.participants
+      |> Enum.map(fn puuid ->
+        __MODULE__.new(%{
+          puuid: puuid,
+          event: @league_account_discovered_event
+        })
+      end)
+      |> Oban.insert_all()
+    end
   end
 end
