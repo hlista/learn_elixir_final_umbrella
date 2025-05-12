@@ -1,6 +1,6 @@
-defmodule LearnElixirFinal.HttpQueueTest do
-  use LearnElixirFinal.DataCase, async: false
-  alias LearnElixirFinal.HttpQueue
+defmodule RiotClient.HttpQueueTest do
+  use ExUnit.Case
+  alias RiotClient.HttpQueue
 
   import Mox
 

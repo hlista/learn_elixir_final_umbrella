@@ -1,9 +1,9 @@
-defmodule LearnElixirFinal.MixProject do
+defmodule LearnElixirFinalPg.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :learn_elixir_final,
+      app: :learn_elixir_final_pg,
       version: "0.1.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
@@ -22,7 +22,7 @@ defmodule LearnElixirFinal.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {LearnElixirFinal.Application, []},
+      mod: {LearnElixirFinalPg.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
@@ -42,11 +42,7 @@ defmodule LearnElixirFinal.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:jason, "~> 1.2"},
       {:swoosh, "~> 1.5"},
-      {:finch, "~> 0.13"},
-      {:gen_stage, "~> 1.0.0"},
-      {:oban, "~> 2.19"},
-      {:ecto_shorts, "~> 2.3"},
-      {:riot_client, in_umbrella: true}
+      {:finch, "~> 0.13"}
     ]
   end
 

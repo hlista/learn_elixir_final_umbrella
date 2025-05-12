@@ -1,6 +1,6 @@
-defmodule LearnElixirFinal.HttpQueue do
+defmodule RiotClient.HttpQueue do
   use GenServer
-  alias LearnElixirFinal.HttpQueue.HttpQueueWorker
+  alias RiotClient.HttpQueue.HttpQueueWorker
 
   @queue_limit 100
   @concurrency 5

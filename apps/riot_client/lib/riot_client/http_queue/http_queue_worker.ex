@@ -1,5 +1,5 @@
-defmodule LearnElixirFinal.HttpQueue.HttpQueueWorker do
-  alias LearnElixirFinal.HttpQueue.BackoffLimiter
+defmodule RiotClient.HttpQueue.HttpQueueWorker do
+  alias RiotClient.HttpQueue.BackoffLimiter
 
   @max_retries 5
   @jitter_range 500..2000

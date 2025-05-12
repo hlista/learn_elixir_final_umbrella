@@ -13,8 +13,6 @@ defmodule LearnElixirFinal.Application do
       {Phoenix.PubSub, name: LearnElixirFinal.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: LearnElixirFinal.Finch},
-      LearnElixirFinal.HttpQueue,
-      LearnElixirFinal.HttpQueue.BackoffLimiter
       # Start a worker by calling: LearnElixirFinal.Worker.start_link(arg)
       # {LearnElixirFinal.Worker, arg}
     ]

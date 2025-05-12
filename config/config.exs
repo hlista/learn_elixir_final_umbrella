@@ -10,12 +10,26 @@
 import Config
 
 # Configure Mix tasks and generators
+config :learn_elixir_final_pg,
+  ecto_repos: [LearnElixirFinalPg.Repo]
+
+# Configures the mailer
+#
+# By default it uses the "Local" adapter which stores the emails
+# locally. You can see the emails in your browser, at "/dev/mailbox".
+#
+# For production it's recommended to configure a different adapter
+# at the `config/runtime.exs`.
+config :learn_elixir_final_pg, LearnElixirFinalPg.Mailer, adapter: Swoosh.Adapters.Local
+
+# Configure Mix tasks and generators
 config :learn_elixir_final,
   ecto_repos: [LearnElixirFinal.Repo]
 
 config :ecto_shorts,
   repo: LearnElixirFinal.Repo,
   error_module: EctoShorts.Actions.Error
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails

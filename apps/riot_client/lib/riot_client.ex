@@ -1,7 +1,7 @@
-defmodule LearnElixirFinal.RiotClient do
+defmodule RiotClient do
   @api_key "RGAPI-9c48c3b4-384c-4aa6-8152-9b85a7837457"
-  alias LearnElixirFinal.HttpQueue
-  alias LearnElixirFinal.RealHttpClient
+  alias RiotClient.HttpQueue
+  alias RiotClient.RealHttpClient
   def get_account_by_riot_id(region \\ "americas", game_name, tag_line) do
     req = %{
       method: :get,
@@ -34,7 +34,7 @@ defmodule LearnElixirFinal.RiotClient do
     end
   end
 
-  def get_match_ids(region, puuid, start, count \\ 20) do
+  def get_match_ids(region \\ "americas", puuid, start, count \\ 20) do
     req = %{
       method: :get,
       url: "https://#{region}.api.riotgames.com/lol/match/v5/matches/by-puuid/#{puuid}/ids?start=#{start}&count=#{count}&api_key=#{@api_key}",
@@ -50,7 +50,7 @@ defmodule LearnElixirFinal.RiotClient do
     end
   end
 
-  def get_match(region, match_id) do
+  def get_match(region \\ "americas", match_id) do
     req = %{
       method: :get,
       url: "https://#{region}.api.riotgames.com/lol/match/v5/matches/#{match_id}?api_key=#{@api_key}",

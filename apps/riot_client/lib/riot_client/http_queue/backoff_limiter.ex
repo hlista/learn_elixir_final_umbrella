@@ -1,4 +1,4 @@
-defmodule LearnElixirFinal.HttpQueue.BackoffLimiter do
+defmodule RiotClient.HttpQueue.BackoffLimiter do
   use GenServer
 
   @default_backoff 10_000  # 10 seconds

@@ -4,7 +4,6 @@ defmodule LearnElixirFinal.LeagueAccountWorker do
     max_attempts: 10,
     unique: [period: 300, states: [:available, :scheduled, :executing]]
 
-  alias LearnElixirFinal.RiotClient
   alias LearnElixirFinal.Leagues
 
   @impl Oban.Worker
