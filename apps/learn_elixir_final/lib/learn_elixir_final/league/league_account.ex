@@ -2,13 +2,13 @@ defmodule LearnElixirFinal.League.LeagueAccount do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @required_fields [
-    :region,
+  @required_fields []
+  @available_fields [
+    :match_offset,
     :tag_line,
     :game_name,
     :puuid
-  ]
-  @available_fields [:match_offset] ++ @required_fields
+  ] ++ @required_fields
 
   schema "league_accounts" do
     field :region, :string

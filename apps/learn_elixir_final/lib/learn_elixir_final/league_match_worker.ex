@@ -4,6 +4,7 @@ defmodule LearnElixirFinal.LeagueMatchWorker do
     max_attempts: 10,
     unique: [period: 300, states: [:available, :scheduled, :executing]]
   alias LearnElixirFinal.RiotClient
+  alias LearnElixirFinal.Leagues
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: league_match}) do
@@ -12,6 +13,7 @@ defmodule LearnElixirFinal.LeagueMatchWorker do
       info = match["info"]
       participants = metadata["participants"]
       update_match_info(league_match.id, info)
+      populate_participants_league_accounts(participants)
       populate_match_participants(league_match.id, info["participants"])
       notify_participants(participants, league_match.match_id)
     end
@@ -28,7 +30,7 @@ defmodule LearnElixirFinal.LeagueMatchWorker do
       game_id: info["gameId"],
       game_name: info["gameName"]
     }
-    Leagues.update_match(league_match_id, match_update_fields)
+    Leagues.update_league_match(league_match_id, match_update_fields)
   end
 
   defp populate_match_participants(league_match_id, participants) do
@@ -67,12 +69,32 @@ defmodule LearnElixirFinal.LeagueMatchWorker do
         league_match_id: league_match_id
       }
     end)
-    |> Leagues.insert_all_match_participants()
+    |> Leagues.find_or_create_many_match_participant()
   end
 
   def queue_many_matches(league_matches) do
     league_matches
     |> Enum.map(&LearnElixirFinal.LeagueMatchWorker.new(&1))
     |> Oban.insert_all()
+  end
+
+  def populate_participants_league_accounts(participants) do
+    res = participants
+    |> Enum.map(&%{puuid: &1})
+    |> Leagues.find_or_create_many_league_account()
+    with {:ok, schemas} <- res do
+      query_riot_and_update_accounts(schemas)
+    end
+  end
+
+  def query_riot_and_update_accounts(schemas) do
+    Enum.each(schemas, fn league_account ->
+      with {:ok, account_info} <- RiotClient.get_account_by_puuid(league_account.puuid) do
+        Leagues.update_league_account(league_account, %{
+          game_name: account_info["gameName"],
+          tag_line: account_info["tagLine"]
+        })
+      end
+    end)
   end
 end

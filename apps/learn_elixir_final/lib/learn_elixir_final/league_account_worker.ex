@@ -9,15 +9,17 @@ defmodule LearnElixirFinal.LeagueAccountWorker do
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: league_account}) do
-    populate_matches(league_account)
+    populate_matches(league_account, "americas")
+    populate_matches(league_account, "asia")
+    populate_matches(league_account, "europe")
+    populate_matches(league_account, "sea")
   end
 
   defp populate_matches(%{
     id: id,
-    region: region,
     puuid: puuid,
     match_offset: match_offset
-  }) do
+  }, region) do
     Stream.resource(
       fn -> match_offset end,
       fn cursor ->
