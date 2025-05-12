@@ -4,7 +4,7 @@ defmodule LearnElixirFinal.LeagueAccountWorker do
     max_attempts: 10,
     unique: [period: 300, states: [:available, :scheduled, :executing]]
 
-  alias LearnElixirFinal.Leagues
+  alias LearnElixirFinalPg.Leagues
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: league_account}) do

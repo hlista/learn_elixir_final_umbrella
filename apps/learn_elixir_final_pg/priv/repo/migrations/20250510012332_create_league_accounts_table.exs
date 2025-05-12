@@ -1,9 +1,8 @@
-defmodule LearnElixirFinal.Repo.Migrations.CreateLeagueAccountsTable do
+defmodule LearnElixirFinalPg.Repo.Migrations.CreateLeagueAccountsTable do
   use Ecto.Migration
 
   def change do
     create table("league_accounts") do
-      add :region, :string
       add :tag_line, :string
       add :game_name, :string
       add :puuid, :string

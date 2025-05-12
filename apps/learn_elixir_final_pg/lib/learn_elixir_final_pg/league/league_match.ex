@@ -1,6 +1,7 @@
-defmodule LearnElixirFinal.League.LeagueMatch do
+defmodule LearnElixirFinalPg.League.LeagueMatch do
   use Ecto.Schema
   import Ecto.Changeset
+  alias LearnElixirFinalPg.League.MatchParticpant
 
   @required_fields [:match_id, :region]
   @available_fields [
@@ -17,7 +18,7 @@ defmodule LearnElixirFinal.League.LeagueMatch do
     field :game_end_timestamp, :integer
     field :game_id, :integer
     field :game_name, :string
-    has_many :match_participants, LearnElixirFinal.League.MatchParticipant
+    has_many :match_participants, MatchParticipant
     timestamps()
   end
 

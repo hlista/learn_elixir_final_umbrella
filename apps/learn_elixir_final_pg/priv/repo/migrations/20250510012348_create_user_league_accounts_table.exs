@@ -1,4 +1,4 @@
-defmodule LearnElixirFinal.Repo.Migrations.CreateUserLeagueAccountsTable do
+defmodule LearnElixirFinalPg.Repo.Migrations.CreateUserLeagueAccountsTable do
   use Ecto.Migration
 
   def change do

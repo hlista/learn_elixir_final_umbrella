@@ -1,6 +1,10 @@
-defmodule LearnElixirFinal.Auth.User do
+defmodule LearnElixirFinalPg.Auth.User do
   use Ecto.Schema
   import Ecto.Changeset
+  alias LearnElixirFinalPg.League.{
+    LeagueAccount,
+    UserLeagueAccount
+  }
 
   @required_fields [:email, :password]
   @available_fields [:enabled] ++ @required_fields
@@ -11,8 +15,8 @@ defmodule LearnElixirFinal.Auth.User do
     field :password_digest, :string, redact: true
     field :enabled, :boolean, default: false
     many_to_many :league_accounts,
-                 LearnElixirFinal.League.LeagueAccount,
-                 join_through: LearnElixirFinal.League.UserLeagueAccount,
+                 LeagueAccount,
+                 join_through: UserLeagueAccount,
                  join_keys: [user_id: :id, league_account_id: :id]
     has_many :match_participants, through: [:league_accounts, :match_participants]
     timestamps()

@@ -1,6 +1,7 @@
-defmodule LearnElixirFinal.League.LeagueAccount do
+defmodule LearnElixirFinalPg.League.LeagueAccount do
   use Ecto.Schema
   import Ecto.Changeset
+  alias LearnElixirFinalPg.League.MatchParticipant
 
   @required_fields []
   @available_fields [
@@ -11,13 +12,12 @@ defmodule LearnElixirFinal.League.LeagueAccount do
   ] ++ @required_fields
 
   schema "league_accounts" do
-    field :region, :string
     field :tag_line, :string
     field :game_name, :string
     field :puuid, :string
     field :match_offset, :integer, default: 0
     has_many :match_participants,
-      LearnElixirFinal.League.MatchParticipant, foreign_key: :puuid, references: :puuid
+      MatchParticipant, foreign_key: :puuid, references: :puuid
     timestamps()
   end
 

@@ -1,6 +1,8 @@
-defmodule LearnElixirFinal.League.UserLeagueAccount do
+defmodule LearnElixirFinalPg.League.UserLeagueAccount do
   use Ecto.Schema
   import Ecto.Changeset
+  alias LearnElixirFinalPg.Auth.User
+  alias LearnElixirFinalPg.League.LeagueAccount
 
   @required_fields [
     :user_id,
@@ -9,8 +11,8 @@ defmodule LearnElixirFinal.League.UserLeagueAccount do
   @available_fields @required_fields
 
   schema "user_league_accounts" do
-    belongs_to :user, LearnElixirFinal.Auth.User
-    belongs_to :league_account, LearnElixirFinal.League.LeagueAccount
+    belongs_to :user, User
+    belongs_to :league_account, LeagueAccount
     timestamps()
   end
 

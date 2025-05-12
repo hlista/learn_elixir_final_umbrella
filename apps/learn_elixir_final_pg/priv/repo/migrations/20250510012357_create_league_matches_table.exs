@@ -1,4 +1,4 @@
-defmodule LearnElixirFinal.Repo.Migrations.CreateLeagueMatchesTable do
+defmodule LearnElixirFinalPg.Repo.Migrations.CreateLeagueMatchesTable do
   use Ecto.Migration
 
   def change do

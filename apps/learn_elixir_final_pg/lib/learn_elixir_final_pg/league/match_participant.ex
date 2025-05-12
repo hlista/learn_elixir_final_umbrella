@@ -1,6 +1,7 @@
-defmodule LearnElixirFinal.League.MatchParticipant do
+defmodule LearnElixirFinalPg.League.MatchParticipant do
   use Ecto.Schema
   import Ecto.Changeset
+  alias LearnElixirFinalPg.League.LeagueMatch
 
   @required_fields [:match_id]
   @available_fields [
@@ -40,7 +41,7 @@ defmodule LearnElixirFinal.League.MatchParticipant do
     field :total_minions_killed, :integer
     field :total_time_spent_dead, :integer
     field :win, :boolean
-    belongs_to :league_match, LearnElixirFinal.League.LeagueMatch
+    belongs_to :league_match, LeagueMatch
     timestamps()
   end
 

@@ -8,7 +8,6 @@ defmodule LearnElixirFinal.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      LearnElixirFinal.Repo,
       {DNSCluster, query: Application.get_env(:learn_elixir_final, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: LearnElixirFinal.PubSub},
       # Start the Finch HTTP client for sending emails
