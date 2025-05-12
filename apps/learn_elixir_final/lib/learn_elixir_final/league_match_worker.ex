@@ -3,7 +3,7 @@ defmodule LearnElixirFinal.LeagueMatchWorker do
     queue: :league_matches,
     max_attempts: 10,
     unique: [period: 300, states: [:available, :scheduled, :executing]]
-  alias LearnElixirFinalPg.Leagues
+  alias LearnElixirFinalPg.League
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: league_match}) do
@@ -29,7 +29,7 @@ defmodule LearnElixirFinal.LeagueMatchWorker do
       game_id: info["gameId"],
       game_name: info["gameName"]
     }
-    Leagues.update_league_match(league_match_id, match_update_fields)
+    League.update_league_match(league_match_id, match_update_fields)
   end
 
   defp populate_match_participants(league_match_id, participants) do
@@ -68,7 +68,7 @@ defmodule LearnElixirFinal.LeagueMatchWorker do
         league_match_id: league_match_id
       }
     end)
-    |> Leagues.find_or_create_many_match_participant()
+    |> League.find_or_create_many_match_participant()
   end
 
   def queue_many_matches(league_matches) do
@@ -80,7 +80,7 @@ defmodule LearnElixirFinal.LeagueMatchWorker do
   def populate_participants_league_accounts(participants) do
     res = participants
     |> Enum.map(&%{puuid: &1})
-    |> Leagues.find_or_create_many_league_account()
+    |> League.find_or_create_many_league_account()
     with {:ok, schemas} <- res do
       query_riot_and_update_accounts(schemas)
     end
@@ -89,7 +89,7 @@ defmodule LearnElixirFinal.LeagueMatchWorker do
   def query_riot_and_update_accounts(schemas) do
     Enum.each(schemas, fn league_account ->
       with {:ok, account_info} <- RiotClient.get_account_by_puuid(league_account.puuid) do
-        Leagues.update_league_account(league_account, %{
+        League.update_league_account(league_account, %{
           game_name: account_info["gameName"],
           tag_line: account_info["tagLine"]
         })

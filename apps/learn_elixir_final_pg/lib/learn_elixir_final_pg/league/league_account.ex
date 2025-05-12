@@ -12,9 +12,11 @@ defmodule LearnElixirFinalPg.League.LeagueAccount do
   ] ++ @required_fields
 
   schema "league_accounts" do
+    field :puuid, :string
     field :tag_line, :string
     field :game_name, :string
-    field :puuid, :string
+    field :region, :string
+    field :match_region, :string
     field :match_offset, :integer, default: 0
     has_many :match_participants,
       MatchParticipant, foreign_key: :puuid, references: :puuid

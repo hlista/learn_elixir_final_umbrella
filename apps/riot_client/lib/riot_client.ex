@@ -34,7 +34,23 @@ defmodule RiotClient do
     end
   end
 
-  def get_match_ids(region \\ "americas", puuid, start, count \\ 20) do
+  def get_account_region(region \\ "americas", puuid) do
+    req = %{
+      method: :get,
+      url: "https://#{region}.api.riotgames.com/riot/account/v1/region/by-game/lol/by-puuid/#{puuid}?api_key=#{@api_key}",
+      headers: [],
+      body: "",
+      opts: [],
+      client: RealHttpClient
+    }
+    case HttpQueue.enqueue_request(req) do
+      {:ok, %{status: 200, body: body}} ->
+        Jason.decode(body)
+      e -> e
+    end
+  end
+
+  def get_account_match_ids(region \\ "americas", puuid, start, count \\ 20) do
     req = %{
       method: :get,
       url: "https://#{region}.api.riotgames.com/lol/match/v5/matches/by-puuid/#{puuid}/ids?start=#{start}&count=#{count}&api_key=#{@api_key}",

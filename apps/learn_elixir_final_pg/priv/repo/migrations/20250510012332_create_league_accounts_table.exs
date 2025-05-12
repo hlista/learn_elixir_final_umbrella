@@ -3,9 +3,11 @@ defmodule LearnElixirFinalPg.Repo.Migrations.CreateLeagueAccountsTable do
 
   def change do
     create table("league_accounts") do
+      add :puuid, :string
       add :tag_line, :string
       add :game_name, :string
-      add :puuid, :string
+      add :region, :string
+      add :match_region, :string
       add :match_offset, :integer, default: 0
 
       timestamps()

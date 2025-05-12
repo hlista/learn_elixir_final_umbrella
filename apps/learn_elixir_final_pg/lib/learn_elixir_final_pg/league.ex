@@ -1,4 +1,4 @@
-defmodule LearnElixirFinalPg.Leagues do
+defmodule LearnElixirFinalPg.League do
   alias EctoShorts.Actions
   alias LearnElixirFinalPg.League.{
     LeagueAccount,
