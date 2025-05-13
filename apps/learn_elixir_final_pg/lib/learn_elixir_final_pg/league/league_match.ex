@@ -8,14 +8,15 @@ defmodule LearnElixirFinalPg.League.LeagueMatch do
     :game_duration,
     :game_end_timestamp,
     :game_id,
-    :game_name
+    :game_name,
+    :participants
   ] ++ @required_fields
 
   schema "league_matches" do
     field :match_id, :string
     field :region, :string
     field :game_duration, :integer
-    field :game_end_timestamp, :integer
+    field :game_end_timestamp, :utc_datetime
     field :game_id, :integer
     field :game_name, :string
     field :participants, {:array, :string}

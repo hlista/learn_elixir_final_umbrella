@@ -44,6 +44,7 @@ defmodule LearnElixirFinalPg.MixProject do
       {:swoosh, "~> 1.5"},
       {:finch, "~> 0.13"},
       {:ecto_shorts, "~> 2.3"},
+      {:oban, "~> 2.19"},
     ]
   end
 

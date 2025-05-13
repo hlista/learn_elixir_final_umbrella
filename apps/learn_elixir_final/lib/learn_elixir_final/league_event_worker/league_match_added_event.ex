@@ -18,7 +18,7 @@ defmodule LearnElixirFinal.LeagueEventWorker.LeagueMatchAddedEvent do
   def update_league_match_info(league_match_id, match_payload) do
     match_update_fields = %{
       game_duration: match_payload["info"]["gameDuration"],
-      game_end_timestamp: match_payload["info"]["gameEndTimestamp"],
+      game_end_timestamp: DateTime.from_unix!(match_payload["info"]["gameEndTimestamp"], :millisecond),
       game_id: match_payload["info"]["gameId"],
       game_name: match_payload["info"]["gameName"],
       participants: match_payload["metadata"]["participants"]

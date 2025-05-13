@@ -14,7 +14,7 @@ defmodule LearnElixirFinal.LeagueEventWorker.LeagueAccountAddedEvent do
       end)
       |> Enum.reduce([],
         fn {:ok, schemas}, acc ->
-            [acc | schemas]
+            acc ++ schemas
           {:error, _}, acc ->
             acc
         end)

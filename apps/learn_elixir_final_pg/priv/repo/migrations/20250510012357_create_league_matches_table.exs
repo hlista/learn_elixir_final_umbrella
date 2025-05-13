@@ -6,7 +6,7 @@ defmodule LearnElixirFinalPg.Repo.Migrations.CreateLeagueMatchesTable do
       add :match_id, :string
       add :region, :string
       add :game_duration, :integer
-      add :game_end_timestamp, :integer
+      add :game_end_timestamp, :utc_datetime
       add :game_id, :integer
       add :game_name, :string
       add :participants, {:array, :string}

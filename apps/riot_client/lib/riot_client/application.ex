@@ -10,7 +10,8 @@ defmodule RiotClient.Application do
     children = [
       {Finch, name: RiotClient.Finch},
       RiotClient.HttpQueue,
-      RiotClient.HttpQueue.BackoffLimiter
+      RiotClient.HttpQueue.BackoffLimiter,
+      RiotClient.HttpQueue.BackoffLimiterTwo
       # Start a worker by calling: LearnElixirFinal.Worker.start_link(arg)
       # {LearnElixirFinal.Worker, arg}
     ]

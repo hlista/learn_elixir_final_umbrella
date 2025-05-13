@@ -8,7 +8,9 @@ defmodule LearnElixirFinalPg.League.LeagueAccount do
     :match_offset,
     :tag_line,
     :game_name,
-    :puuid
+    :puuid,
+    :region,
+    :match_region
   ] ++ @required_fields
 
   schema "league_accounts" do
@@ -30,7 +32,7 @@ defmodule LearnElixirFinalPg.League.LeagueAccount do
   @doc false
   def changeset(preference, attrs) do
     preference
-    |> cast(attrs, @required_fields)
-    |> validate_required(@available_fields)
+    |> cast(attrs, @available_fields)
+    |> validate_required(@required_fields)
   end
 end

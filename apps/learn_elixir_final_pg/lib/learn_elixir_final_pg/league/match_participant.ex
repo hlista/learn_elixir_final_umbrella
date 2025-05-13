@@ -3,12 +3,39 @@ defmodule LearnElixirFinalPg.League.MatchParticipant do
   import Ecto.Changeset
   alias LearnElixirFinalPg.League.LeagueMatch
 
-  @required_fields [:match_id]
+  @required_fields [
+    :puuid,
+    :league_match_id,
+  ]
   @available_fields [
-    :game_duration,
-    :game_end_timestamp,
-    :game_id,
-    :game_name
+    :assists,
+    :baron_kills,
+    :champ_experience,
+    :champ_level,
+    :champion_name,
+    :damage_dealt_to_buildings,
+    :damage_dealt_to_objectives,
+    :damage_dealt_to_turrets,
+    :damage_self_mitigated,
+    :deaths,
+    :gold_earned,
+    :gold_spent,
+    :kills,
+    :largest_killing_spree,
+    :largest_multi_kill,
+    :magic_damage_dealt,
+    :magic_damage_dealt_to_champions,
+    :magic_damage_taken,
+    :physical_damage_dealt,
+    :physical_damage_dealt_to_champions,
+    :physical_damage_taken,
+    :total_damage_dealt,
+    :total_damage_dealt_to_champions,
+    :total_damage_taken,
+    :total_heal,
+    :total_minions_killed,
+    :total_time_spent_dead,
+    :win
   ] ++ @required_fields
 
   schema "match_participants" do
@@ -52,7 +79,7 @@ defmodule LearnElixirFinalPg.League.MatchParticipant do
   @doc false
   def changeset(preference, attrs) do
     preference
-    |> cast(attrs, @required_fields)
-    |> validate_required(@available_fields)
+    |> cast(attrs, @available_fields)
+    |> validate_required(@required_fields)
   end
 end

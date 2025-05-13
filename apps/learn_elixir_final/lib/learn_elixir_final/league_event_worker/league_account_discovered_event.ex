@@ -65,6 +65,5 @@ defmodule LearnElixirFinal.LeagueEventWorker.LeagueAccountDiscoveredEvent do
       region ->
         {:ok, region}
     end
-
   end
 end

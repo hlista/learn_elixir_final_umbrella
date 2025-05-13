@@ -17,6 +17,10 @@ config :ecto_shorts,
   repo: LearnElixirFinalPg.Repo,
   error_module: EctoShorts.Actions.Error
 
+config :learn_elixir_final, Oban,
+  repo: LearnElixirFinalPg.Repo,
+  queues: [league_events: 5]
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails

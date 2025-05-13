@@ -12,6 +12,7 @@ defmodule LearnElixirFinal.Application do
       {Phoenix.PubSub, name: LearnElixirFinal.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: LearnElixirFinal.Finch},
+      {Oban, Application.fetch_env!(:learn_elixir_final, Oban)}
       # Start a worker by calling: LearnElixirFinal.Worker.start_link(arg)
       # {LearnElixirFinal.Worker, arg}
     ]
