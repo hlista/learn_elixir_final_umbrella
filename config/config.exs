@@ -37,9 +37,11 @@ config :riot_client, :riot_api_key, "RGAPI-92ba860d-988d-4edc-9e86-d52fb2ddfdc5"
 # at the `config/runtime.exs`.
 config :learn_elixir_final, LearnElixirFinal.Mailer, adapter: Swoosh.Adapters.Local
 
+config :learn_elixir_final, ecto_repos: [LearnElixirFinalPg.Repo]
+
 config :learn_elixir_final_web,
-  ecto_repos: [LearnElixirFinal.Repo],
-  generators: [context_app: :learn_elixir_final]
+  ecto_repos: [LearnElixirFinalPg.Repo],
+  generators: [context_app: :learn_elixir_final_pg]
 
 # Configures the endpoint
 config :learn_elixir_final_web, LearnElixirFinalWeb.Endpoint,

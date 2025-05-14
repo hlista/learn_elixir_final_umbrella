@@ -1,18 +1,27 @@
 defmodule LearnElixirFinal.LeagueAggregate do
-  import Ecto.Query
-  alias LearnElixirFinalPg.Repo
+  alias LearnElixirFinalPg.{
+    League,
+    Auth
+  }
+  alias __MODULE__.Participant
 
   def aggregate_league_account(league_account_id) do
-    participant_query = from p in LearnElixirFinalPg.League.MatchParticipant, limit: 30, order_by: p.game_end_timestamp
-    LearnElixirFinalPg.League.LeagueAccount
-    |> Repo.get(league_account_id)
-    |> Repo.preload([match_participants: participant_query])
+    with {:ok, league_account} <- League.find_league_account(%{id: league_account_id}) do
+      league_account
+      |> League.preload_thirty_participants()
+      |> Map.get(:match_participants, [])
+      |> Participant.aggregate_participants()
+      |> then(& {:ok, &1})
+    end
   end
 
   def aggregate_user(user_id) do
-    participant_query = from p in LearnElixirFinalPg.League.MatchParticipant, limit: 30, order_by: p.game_end_timestamp
-    LearnElixirFinalPg.Auth.User
-    |> Repo.get(user_id)
-    |> Repo.preload([match_participants: participant_query])
+    with {:ok, user} <- Auth.find_user(%{id: user_id}) do
+      user
+      |> League.preload_thirty_participants()
+      |> Map.get(:match_participants, [])
+      |> Participant.aggregate_participants()
+      |> then(& {:ok, &1})
+    end
   end
 end
