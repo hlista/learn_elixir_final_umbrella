@@ -20,9 +20,10 @@ defmodule LearnElixirFinal.LeagueAggregate.Participant do
       {k, v} when is_integer(v) ->
         current_value = Map.get(acc, k, 0)
         {k, current_value + v}
-      {k, true} ->
+      {k, v} when is_boolean(v) ->
+        v = if v, do: 1, else: 0
         current_value = Map.get(acc, k, 0)
-        {k, current_value + 1}
+        {k, current_value + v}
       _ -> {}
     end)
     |> Enum.reject(&(&1 === {}))
