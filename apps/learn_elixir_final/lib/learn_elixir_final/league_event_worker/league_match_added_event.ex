@@ -7,7 +7,7 @@ defmodule LearnElixirFinal.LeagueEventWorker.LeagueMatchAddedEvent do
     }} <- League.find_league_match(%{id: league_match_id}),
       {:ok, match_payload} <- RiotClient.get_match(region, match_id),
       {:ok, league_match} <- update_league_match_info(league_match_id, match_payload),
-      {:ok, match_participants} <- populate_match_participants(league_match.id, match_payload["info"]["participants"]) do
+      {:ok, match_participants} <- populate_match_participants(league_match, match_payload["info"]["participants"]) do
         {:ok, %{
           league_match: league_match,
           match_participants: match_participants
@@ -26,7 +26,7 @@ defmodule LearnElixirFinal.LeagueEventWorker.LeagueMatchAddedEvent do
     League.update_league_match(league_match_id, match_update_fields)
   end
 
-  defp populate_match_participants(league_match_id, participants) do
+  defp populate_match_participants(league_match, participants) do
     participants
     |> Enum.map(fn participant ->
       %{
@@ -59,7 +59,8 @@ defmodule LearnElixirFinal.LeagueEventWorker.LeagueMatchAddedEvent do
         total_minions_killed: participant["totalMinionsKilled"],
         total_time_spent_dead: participant["totalTimeSpentDead"],
         win: participant["win"],
-        league_match_id: league_match_id
+        league_match_id: league_match.id,
+        game_end_timestamp: league_match.game_end_timestamp
       }
     end)
     |> League.find_or_create_many_match_participant()

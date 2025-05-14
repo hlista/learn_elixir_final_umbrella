@@ -32,6 +32,7 @@ defmodule LearnElixirFinalPg.Repo.Migrations.CreateMatchParticipantsTable do
       add :total_minions_killed, :integer
       add :total_time_spent_dead, :integer
       add :win, :boolean
+      add :game_end_timestamp, :utc_datetime
       add :league_match_id, references("league_matches")
       timestamps()
     end

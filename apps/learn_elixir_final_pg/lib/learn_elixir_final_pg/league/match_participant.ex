@@ -1,11 +1,13 @@
 defmodule LearnElixirFinalPg.League.MatchParticipant do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
   alias LearnElixirFinalPg.League.LeagueMatch
 
   @required_fields [
     :puuid,
     :league_match_id,
+    :game_end_timestamp
   ]
   @available_fields [
     :assists,
@@ -68,6 +70,7 @@ defmodule LearnElixirFinalPg.League.MatchParticipant do
     field :total_minions_killed, :integer
     field :total_time_spent_dead, :integer
     field :win, :boolean
+    field :game_end_timestamp, :utc_datetime
     belongs_to :league_match, LeagueMatch
     timestamps()
   end
@@ -81,5 +84,11 @@ defmodule LearnElixirFinalPg.League.MatchParticipant do
     preference
     |> cast(attrs, @available_fields)
     |> validate_required(@required_fields)
+  end
+
+  def last_thirty_query() do
+    __MODULE__
+    |> limit(30)
+    |> order_by([desc: :game_end_timestamp])
   end
 end

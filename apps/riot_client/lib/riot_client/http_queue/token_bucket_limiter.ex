@@ -13,7 +13,6 @@ defmodule RiotClient.TokenBucketLimiter do
     rate_limit = Keyword.get(opts, :rate_limit, 100)     # e.g., 100
     max_tokens = Keyword.get(opts, :max_tokens, rate_limit)
     interval = Keyword.get(opts, :interval, 1_000)      # default: per second
-
     now = now()
     state = %{
       tokens: max_tokens,
@@ -32,7 +31,7 @@ defmodule RiotClient.TokenBucketLimiter do
     elapsed_ms = now - state.last_refill
 
     refill_rate_per_ms = state.rate_limit / state.interval
-    tokens_to_add = refill_rate_per_ms * elapsed_ms
+    tokens_to_add = floor(refill_rate_per_ms * elapsed_ms)
     new_token_count = min(state.max_tokens, state.tokens + tokens_to_add)
 
     if new_token_count >= 1 do

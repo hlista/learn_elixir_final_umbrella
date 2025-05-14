@@ -6,6 +6,7 @@ defmodule LearnElixirFinalPg.League do
     MatchParticipant,
     UserLeagueAccount
   }
+  alias LearnElixirFinalPg.Repo
 
   ### League Accounts
 
@@ -119,5 +120,9 @@ defmodule LearnElixirFinalPg.League do
 
   def update_match_participant(id, update_params, opts \\ []) do
     Actions.update(MatchParticipant, id, update_params, opts)
+  end
+
+  def preload_thirty_participants(user_or_league_account) do
+    Repo.preload(user_or_league_account, [match_participants: MatchParticipant.last_thirty_query()])
   end
 end
