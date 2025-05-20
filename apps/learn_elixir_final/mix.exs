@@ -45,7 +45,6 @@ defmodule LearnElixirFinal.MixProject do
       {:finch, "~> 0.13"},
       {:gen_stage, "~> 1.0.0"},
       {:oban, "~> 2.19"},
-      {:ecto_shorts, "~> 2.3"},
       {:riot_client, in_umbrella: true},
       {:learn_elixir_final_pg, in_umbrella: true}
     ]
