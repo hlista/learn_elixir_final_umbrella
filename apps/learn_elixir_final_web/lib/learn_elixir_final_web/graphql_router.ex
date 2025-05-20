@@ -14,6 +14,6 @@ defmodule LearnElixirFinalWeb.GraphqlRouter do
     to: Absinthe.Plug.GraphiQL,
     init_opts: [
       schema: LearnElixirFinalWeb.Schema,
-      interface: :playground
+      interface: :simple
     ]
 end

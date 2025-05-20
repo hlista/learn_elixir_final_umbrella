@@ -86,14 +86,4 @@ defmodule LearnElixirFinalWeb.Router do
       live "/users/confirm", UserConfirmationInstructionsLive, :new
     end
   end
-
-#   scope "/api" do
-#     pipe_through :api
-
-#     forward "/graphql", Absinthe.Plug,
-#       schema: LearnElixirFinalWeb.Schema
-
-#     forward "/graphiql", Absinthe.Plug.GraphiQL,
-#       schema: LearnElixirFinalWeb.Schema
-#   end
 end
