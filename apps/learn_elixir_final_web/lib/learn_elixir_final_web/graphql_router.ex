@@ -1,19 +1,10 @@
 defmodule LearnElixirFinalWeb.GraphqlRouter do
-  use Plug.Router
+  use LearnElixirFinalWeb, :router
 
-  plug :match
-  plug :dispatch
+  forward "/graphql", Absinthe.Plug,
+    schema: LearnElixirFinalWeb.Schema
 
-  forward "/graphql",
-    to: Absinthe.Plug,
-    init_opts: [
-      schema: LearnElixirFinalWeb.Schema
-    ]
-
-  forward "/graphiql",
-    to: Absinthe.Plug.GraphiQL,
-    init_opts: [
+  forward "/graphiql", Absinthe.Plug.GraphiQL,
       schema: LearnElixirFinalWeb.Schema,
-      interface: :simple
-    ]
+      interface: :playground
 end

@@ -10,11 +10,11 @@ defmodule LearnElixirFinalWeb.Resolvers.UserResolver do
     end
   end
 
-  def logout(_, _) do
+  def logout(_, %{current_user: current_user}) do
 
   end
 
-  def fetch(%{current_user: current_user}, _) do
+  def fetch(_, %{context: %{current_user: current_user}}) do
     {:ok, current_user}
   end
 end

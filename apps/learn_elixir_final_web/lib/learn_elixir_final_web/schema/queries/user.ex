@@ -1,6 +1,6 @@
 defmodule LearnElixerFinalWeb.Schema.Queries.User do
   use Absinthe.Schema.Notation
-  LearnElixirFinalWeb.Resolvers.UserResolver
+  alias LearnElixirFinalWeb.Resolvers.UserResolver
   object :user_queries do
     field :fetch, :user do
       resolve &UserResolver.fetch/2

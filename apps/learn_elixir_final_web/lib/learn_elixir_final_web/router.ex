@@ -17,6 +17,10 @@ defmodule LearnElixirFinalWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug LearnElixirFinalWeb.Plugs.GraphqlAuthPlug
+  end
+
   scope "/", LearnElixirFinalWeb do
     pipe_through :browser
 
@@ -24,6 +28,7 @@ defmodule LearnElixirFinalWeb.Router do
   end
 
   scope "/", LearnElixirFinalWeb do
+    pipe_through [:api, :auth]
     forward "/api", GraphqlRouter
   end
 
