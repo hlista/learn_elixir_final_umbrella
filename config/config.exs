@@ -13,6 +13,16 @@ import Config
 config :learn_elixir_final_pg,
   ecto_repos: [LearnElixirFinalPg.Repo]
 
+# Configures the mailer
+#
+# By default it uses the "Local" adapter which stores the emails
+# locally. You can see the emails in your browser, at "/dev/mailbox".
+#
+# For production it's recommended to configure a different adapter
+# at the `config/runtime.exs`.
+config :learn_elixir_final_pg, LearnElixirFinalPg.Mailer, adapter: Swoosh.Adapters.Local
+
+
 config :ecto_shorts,
   repo: LearnElixirFinalPg.Repo,
   error_module: EctoShorts.Actions.Error

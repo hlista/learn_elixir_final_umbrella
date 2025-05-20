@@ -1,5 +1,8 @@
 import Config
 
+# Only in tests, remove the complexity from the password hashing algorithm
+config :bcrypt_elixir, :log_rounds, 1
+
 # Configure your database
 #
 # The MIX_TEST_PARTITION environment variable can be used
@@ -24,7 +27,7 @@ config :learn_elixir_final_web, LearnElixirFinalWeb.Endpoint,
 config :logger, level: :warning
 
 # In test we don't send emails
-config :learn_elixir_final, LearnElixirFinal.Mailer, adapter: Swoosh.Adapters.Test
+config :learn_elixir_final_pg, LearnElixirFinalPg.Mailer, adapter: Swoosh.Adapters.Test
 
 # Disable swoosh api client as it is only required for production adapters
 config :swoosh, :api_client, false

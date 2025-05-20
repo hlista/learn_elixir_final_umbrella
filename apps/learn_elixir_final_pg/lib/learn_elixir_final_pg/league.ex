@@ -4,7 +4,7 @@ defmodule LearnElixirFinalPg.League do
     LeagueAccount,
     LeagueMatch,
     MatchParticipant,
-    UserLeagueAccount
+   # UserLeagueAccount
   }
   alias LearnElixirFinalPg.Repo
 
