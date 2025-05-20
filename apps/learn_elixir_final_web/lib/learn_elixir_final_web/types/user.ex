@@ -6,6 +6,6 @@ defmodule LearnElixerFinalWeb.Types.User do
   object :user do
     field :id, :id
     field :email, :string
-    field :league_accounts, list_of(:league_account)
+    # field :league_accounts, list_of(:league_account)
   end
 end

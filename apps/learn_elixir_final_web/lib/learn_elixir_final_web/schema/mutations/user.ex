@@ -1,19 +1,15 @@
 defmodule LearnElixerFinalWeb.Schema.Mutations.User do
   use Absinthe.Schema.Notation
-
+  alias LearnElixirFinalWeb.Resolvers.UserResolver
   object :user_mutations do
     field :login, :user do
       arg :email, non_null(:string)
       arg :password, non_null(:string)
+      resolve &UserResolver.login/2
     end
 
     field :logout, :user do
-
-    end
-
-    field :sign_up, :user do
-      arg :email, non_null(:string)
-      arg :password, non_null(:string)
+      resolve &UserResolver.logout/2
     end
   end
 end

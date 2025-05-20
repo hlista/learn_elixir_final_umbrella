@@ -1,13 +1,13 @@
 defmodule LearnElixerFinalWeb.Schema.Queries.User do
   use Absinthe.Schema.Notation
-
+  LearnElixirFinalWeb.Resolvers.UserResolver
   object :user_queries do
     field :fetch, :user do
-
+      resolve &UserResolver.fetch/2
     end
 
-    field :search, list_of(:user) do
+    # field :search, list_of(:user) do
 
-    end
+    # end
   end
 end

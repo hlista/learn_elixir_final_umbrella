@@ -23,6 +23,10 @@ defmodule LearnElixirFinalWeb.Router do
     get "/", PageController, :home
   end
 
+  scope "/", LearnElixirFinalWeb do
+    forward "/api", GraphqlRouter
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", LearnElixirFinalWeb do
   #   pipe_through :api
@@ -82,4 +86,14 @@ defmodule LearnElixirFinalWeb.Router do
       live "/users/confirm", UserConfirmationInstructionsLive, :new
     end
   end
+
+#   scope "/api" do
+#     pipe_through :api
+
+#     forward "/graphql", Absinthe.Plug,
+#       schema: LearnElixirFinalWeb.Schema
+
+#     forward "/graphiql", Absinthe.Plug.GraphiQL,
+#       schema: LearnElixirFinalWeb.Schema
+#   end
 end

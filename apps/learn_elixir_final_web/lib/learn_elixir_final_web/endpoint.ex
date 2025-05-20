@@ -1,6 +1,6 @@
 defmodule LearnElixirFinalWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :learn_elixir_final_web
-
+  use Absinthe.Phoenix.Endpoint
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
@@ -42,9 +42,12 @@ defmodule LearnElixirFinalWeb.Endpoint do
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
   plug Plug.Parsers,
-    parsers: [:urlencoded, :multipart, :json],
+    parsers: [:urlencoded, :multipart, :json, Absinthe.Plug.Parser],
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
+
+  # plug Absinthe.Plug,
+  #   schema: LearnElixirFinalWeb.Schema
 
   plug Plug.MethodOverride
   plug Plug.Head

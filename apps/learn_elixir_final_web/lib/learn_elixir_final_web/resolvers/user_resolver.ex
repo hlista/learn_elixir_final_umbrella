@@ -7,7 +7,7 @@ defmodule LearnElixirFinalWeb.Resolvers.UserResolver do
 
   end
 
-  def sign_up(_, _) do
-
+  def fetch(%{current_user: current_user}, _) do
+    {:ok, current_user}
   end
 end

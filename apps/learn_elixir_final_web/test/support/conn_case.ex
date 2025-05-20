@@ -32,7 +32,7 @@ defmodule LearnElixirFinalWeb.ConnCase do
   end
 
   setup tags do
-    LearnElixirFinal.DataCase.setup_sandbox(tags)
+    LearnElixirFinalPg.DataCase.setup_sandbox(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 
