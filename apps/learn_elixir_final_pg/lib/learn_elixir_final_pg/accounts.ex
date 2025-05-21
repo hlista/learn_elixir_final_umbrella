@@ -7,7 +7,11 @@ defmodule LearnElixirFinalPg.Accounts do
   alias LearnElixirFinalPg.Repo
 
   alias LearnElixirFinalPg.Accounts.{User, UserToken, UserNotifier}
+  alias EctoShorts.Actions
 
+  def find_user(params, opts \\ []) do
+    Actions.find(User, params, opts)
+  end
   ## Database getters
 
   @doc """
