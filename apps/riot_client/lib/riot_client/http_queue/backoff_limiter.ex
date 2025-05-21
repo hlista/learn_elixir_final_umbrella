@@ -2,20 +2,22 @@ defmodule RiotClient.HttpQueue.BackoffLimiter do
   use GenServer
 
   @default_backoff 10_000  # 10 seconds
-  @name __MODULE__
 
-  def start_link(_opts), do: GenServer.start_link(__MODULE__, nil, name: @name)
-
-  def allow? do
-    GenServer.call(@name, :allow?)
+  def start_link(opts) do
+    name = Keyword.fetch!(opts, :name)
+    GenServer.start_link(__MODULE__, opts, name: name)
   end
 
-  def notify_429(retry_after \\ nil) do
-    GenServer.cast(@name, {:rate_limited, retry_after})
+  def allow?(name) do
+    GenServer.call(name, :allow?)
   end
 
-  def backoff_ms do
-    GenServer.call(@name, :backoff_ms)
+  def notify_429(name, retry_after \\ nil) do
+    GenServer.cast(name, {:rate_limited, retry_after})
+  end
+
+  def backoff_ms(name) do
+    GenServer.call(name, :backoff_ms)
   end
 
   # Internal State

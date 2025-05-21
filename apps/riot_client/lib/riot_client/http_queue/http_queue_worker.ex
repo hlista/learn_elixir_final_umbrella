@@ -1,40 +1,82 @@
 defmodule RiotClient.HttpQueue.HttpQueueWorker do
-  alias RiotClient.TokenBucketLimiter
+  alias RiotClient.HttpQueue.BackoffLimiter
 
   @max_retries 5
-  @jitter_range 500..2000
-  @base_delay 1_000
-  @max_delay 60_000
+  @jitter_range 5..20
+  @region_to_backoff_limiter %{
+    "americas" => :americas_backoff_limiter,
+    "europe" => :europe_backoff_limiter,
+    "asia" => :asia_backoff_limiter,
+    "sea" => :sea_backoff_limiter
+  }
 
-  @allowed_regions ["americas", "europe", "asia", "sea"]
+  def run(%{region: region} = req, from_pid) do
+    case backoff_limiter_name(region) do
+      nil -> send(from_pid, {:http_response, {:error, "Invalid Region"}})
+      backoff_limiter_name ->
+        req
+        |> Map.delete(:region)
+        |> Map.put(:backoff_limiter_name, backoff_limiter_name)
+        |> run(from_pid)
+    end
+  end
 
-  def run(%{method: method, url: url, headers: headers, body: body, opts: opts, client: client, retries: retries, region: region} = req, from_pid) do
-    case allow_region_second_limiter(region) && allow_region_minute_limiter(region) do
+  def run(%{
+    backoff_limiter_name: backoff_limiter_name
+  } = req, from_pid) do
+    case BackoffLimiter.allow?(backoff_limiter_name) do
       true ->
-        case client.request(method, url, headers, body, opts) do
-          {:ok, %{status: 429, headers: headers}} ->
-            IO.inspect "429 reached wait #{get_retry_after(headers)}"
-            send(from_pid, {:http_response, {:error, :max_retries_exceeded}})
-            # if retries < @max_retries do
-            #   sleep_ms = retry_after + Enum.random(@jitter_range)
-            #   Process.sleep(sleep_ms)
-            #   run(%{req | retries: retries + 1}, from_pid)
-            # else
-            #   send(from_pid, {:http_response, {:error, :max_retries_exceeded}})
-            # end
-          {:ok, response} ->
-            send(from_pid, {:http_response, {:ok, response}})
-          {:error, reason} ->
-            send(from_pid, {:http_response, {:error, reason}})
-        end
-
+        attempt_request(req, from_pid)
       false ->
-        if retries < @max_retries do
-          Process.sleep(@base_delay)
-          run(%{req | retries: retries + 1}, from_pid)
-        else
-          send(from_pid, {:http_response, {:error, :max_retries_exceeded}})
-        end
+        backoff_active(req, from_pid)
+    end
+  end
+
+  def attempt_request(%{
+    method: method,
+    url: url,
+    headers: headers,
+    body: body,
+    opts: opts,
+    client: client,
+    retries: retries,
+    backoff_limiter_name: backoff_limiter_name
+  } = req, from_pid) do
+    case client.request(method, url, headers, body, opts) do
+      {:ok, %{status: 429, headers: headers}} ->
+        recieved_429(req, headers, from_pid)
+      {:ok, response} ->
+        send(from_pid, {:http_response, {:ok, response}})
+      {:error, reason} ->
+        send(from_pid, {:http_response, {:error, reason}})
+    end
+  end
+
+  def backoff_active(%{
+    backoff_limiter_name: backoff_limiter_name,
+    retries: retries
+  } = req, from_pid) do
+    retry_after = BackoffLimiter.backoff_ms(backoff_limiter_name) + Enum.random(@jitter_range)
+    if retries < @max_retries do
+      Process.sleep(retry_after)
+      run(%{req | retries: retries + 1}, from_pid)
+    else
+      send(from_pid, {:http_response, {:error, :max_retries_exceeded}})
+    end
+  end
+
+  def recieved_429(%{
+    backoff_limiter_name: backoff_limiter_name,
+    retries: retries
+  } = req, headers, from_pid) do
+    retry_after = get_retry_after(headers)
+    BackoffLimiter.notify_429(backoff_limiter_name, retry_after)
+    if retries < @max_retries do
+      sleep_ms = retry_after + Enum.random(@jitter_range)
+      Process.sleep(sleep_ms)
+      run(%{req | retries: retries + 1}, from_pid)
+    else
+      send(from_pid, {:http_response, {:error, :max_retries_exceeded}})
     end
   end
 
@@ -54,27 +96,7 @@ defmodule RiotClient.HttpQueue.HttpQueueWorker do
     end
   end
 
-  def exponential_backoff(retries) do
-    Enum.random(@jitter_range) * retries
-    # exponential = min(@base_delay * :math.pow(2, retries) |> round(), @max_delay)
-    # exponential + Enum.random(@jitter_range)
-  end
-
-  def allow_region_second_limiter(region) do
-    case region in @allowed_regions do
-      true ->
-        TokenBucketLimiter.allow?(String.to_existing_atom("#{region}_second_limiter"))
-      false ->
-        false
-    end
-  end
-
-  def allow_region_minute_limiter(region) do
-    case region in @allowed_regions do
-      true ->
-        TokenBucketLimiter.allow?(String.to_existing_atom("#{region}_minute_limiter"))
-      false ->
-        false
-    end
+  def backoff_limiter_name(region) do
+    @region_to_backoff_limiter[region]
   end
 end

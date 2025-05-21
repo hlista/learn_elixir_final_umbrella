@@ -19,7 +19,8 @@ defmodule RiotClient.HttpQueueTest do
       headers: [],
       body: "",
       opts: [],
-      client: HttpClientMock
+      client: HttpClientMock,
+      region: "sea"
     }
 
     result = HttpQueue.enqueue_request(req)
@@ -42,7 +43,8 @@ defmodule RiotClient.HttpQueueTest do
       headers: [],
       body: "",
       opts: [],
-      client: HttpClientMock
+      client: HttpClientMock,
+      region: "europe"
     }
 
     result = HttpQueue.enqueue_request(req)
@@ -74,7 +76,8 @@ defmodule RiotClient.HttpQueueTest do
       headers: [],
       body: "",
       opts: [],
-      client: HttpClientMock
+      client: HttpClientMock,
+      region: "americas"
     }
 
     result = HttpQueue.enqueue_request(req)
