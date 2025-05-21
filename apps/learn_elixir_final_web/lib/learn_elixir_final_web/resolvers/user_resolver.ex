@@ -10,8 +10,9 @@ defmodule LearnElixirFinalWeb.Resolvers.UserResolver do
     end
   end
 
-  def logout(_, %{current_user: current_user}) do
-
+  def logout(_, %{context: %{session: user_token, current_user: user}}) do
+    Accounts.delete_user_session_token(user_token)
+    {:ok, user}
   end
 
   def fetch(_, %{context: %{current_user: current_user}}) do

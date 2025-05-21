@@ -1,4 +1,4 @@
-defmodule LearnElixerFinalWeb.Schema.Mutations.LeagueAccount do
+defmodule LearnElixirFinalWeb.Schema.Mutations.LeagueAccount do
   use Absinthe.Schema.Notation
 
   object :league_account_mutations do

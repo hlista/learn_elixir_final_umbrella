@@ -1,4 +1,4 @@
-defmodule LearnElixerFinalWeb.Types.User do
+defmodule LearnElixirFinalWeb.Types.User do
   use Absinthe.Schema.Notation
 
 #  import Absinthe.Resolution.Helpers, only: [dataloader: 1]

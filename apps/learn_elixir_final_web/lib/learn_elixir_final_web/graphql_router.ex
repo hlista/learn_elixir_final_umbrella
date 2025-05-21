@@ -6,5 +6,6 @@ defmodule LearnElixirFinalWeb.GraphqlRouter do
 
   forward "/graphiql", Absinthe.Plug.GraphiQL,
       schema: LearnElixirFinalWeb.Schema,
+      socket: LearnElixirFinalWeb.UserSocket,
       interface: :playground
 end

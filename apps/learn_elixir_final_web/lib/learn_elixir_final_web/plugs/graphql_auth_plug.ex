@@ -12,7 +12,9 @@ defmodule LearnElixirFinalWeb.Plugs.GraphqlAuthPlug do
     with {:ok, session_token} <- get_session_token(conn),
          {:ok, session_binary} <- Base.url_decode64(session_token, padding: false),
          user <- Accounts.get_user_by_session_token(session_binary) do
-      Absinthe.Plug.assign_context(conn, :current_user, user)
+      conn
+      |> Absinthe.Plug.assign_context(:current_user, user)
+      |> Absinthe.Plug.assign_context(:session, session_binary)
     else
       _ ->
         conn

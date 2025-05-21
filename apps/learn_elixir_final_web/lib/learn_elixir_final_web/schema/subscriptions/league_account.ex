@@ -1,4 +1,4 @@
-defmodule LearnElixerFinalWeb.Schema.Subscriptions.LeagueAccount do
+defmodule LearnElixirFinalWeb.Schema.Subscriptions.LeagueAccount do
   use Absinthe.Schema.Notation
 
   object :league_account_subscriptions do

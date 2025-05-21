@@ -1,4 +1,4 @@
-defmodule LearnElixerFinalWeb.Schema.Subscriptions.User do
+defmodule LearnElixirFinalWeb.Schema.Subscriptions.User do
   use Absinthe.Schema.Notation
 
   object :user_subscriptions do

@@ -62,7 +62,8 @@ defmodule LearnElixirFinalWeb.MixProject do
       {:absinthe, "~> 1.7"},
       {:absinthe_plug, "~> 1.5"},
       {:absinthe_phoenix, "~> 2.0.0"},
-      {:dataloader, "~> 1.0.0"}
+      {:dataloader, "~> 1.0.0"},
+      {:phoenix_pubsub, "~> 2.0"},
     ]
   end
 

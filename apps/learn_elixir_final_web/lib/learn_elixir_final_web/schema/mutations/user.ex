@@ -1,4 +1,4 @@
-defmodule LearnElixerFinalWeb.Schema.Mutations.User do
+defmodule LearnElixirFinalWeb.Schema.Mutations.User do
   use Absinthe.Schema.Notation
   alias LearnElixirFinalWeb.Resolvers.UserResolver
   object :user_mutations do
