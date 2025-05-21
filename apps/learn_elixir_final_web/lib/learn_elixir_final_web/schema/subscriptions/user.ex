@@ -6,7 +6,8 @@ defmodule LearnElixirFinalWeb.Schema.Subscriptions.User do
       arg :user_id, non_null(:id)
       config fn args, %{context: %{current_user: user}} ->
         topic = "user_match_added:#{args.user_id}"
-        LearnElixirFinalWeb.Presence.track(
+        LearnElixirFinalWeb.Subscription.Tracker.track(topic)
+        LearnElixirFinalWeb.Subscription.Presence.track(
           self(),  # the process (in Absinthe context, the socket's process)
           topic,
           user.id,

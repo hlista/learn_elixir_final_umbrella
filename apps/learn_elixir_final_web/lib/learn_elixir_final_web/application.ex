@@ -12,7 +12,9 @@ defmodule LearnElixirFinalWeb.Application do
       # Start a worker by calling: LearnElixirFinalWeb.Worker.start_link(arg)
       # {LearnElixirFinalWeb.Worker, arg},
       # Start to serve requests, typically the last entry
-      LearnElixirFinalWeb.Presence,
+      LearnElixirFinalWeb.Subscription.Tracker,
+      LearnElixirFinalWeb.Subscription.Presence,
+      LearnElixirFinalWeb.Subscription.Janitor,
       LearnElixirFinalWeb.Endpoint,
       {Absinthe.Subscription, LearnElixirFinalWeb.Endpoint},
     ]
