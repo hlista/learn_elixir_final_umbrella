@@ -1,7 +1,7 @@
 defmodule LearnElixirFinal.LeagueAggregate do
   alias LearnElixirFinalPg.{
     League,
-    Auth
+    Accounts
   }
   alias __MODULE__.Participant
 
@@ -16,7 +16,7 @@ defmodule LearnElixirFinal.LeagueAggregate do
   end
 
   def aggregate_user(user_id) do
-    with {:ok, user} <- Auth.find_user(%{id: user_id}) do
+    with {:ok, user} <- Accounts.find_user(%{id: user_id}) do
       user
       |> League.preload_thirty_participants()
       |> Map.get(:match_participants, [])

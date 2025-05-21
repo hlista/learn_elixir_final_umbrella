@@ -1,8 +1,6 @@
 defmodule LearnElixirFinalWeb.UserSettingsLive do
   use LearnElixirFinalWeb, :live_view
 
-  alias LearnElixirFinalPg.Accounts
-
   def render(assigns) do
     ~H"""
     <.header class="text-center">
@@ -75,7 +73,7 @@ defmodule LearnElixirFinalWeb.UserSettingsLive do
 
   def mount(%{"token" => token}, _session, socket) do
     socket =
-      case Accounts.update_user_email(socket.assigns.current_user, token) do
+      case LearnElixirFinal.update_user_email(socket.assigns.current_user, token) do
         :ok ->
           put_flash(socket, :info, "Email changed successfully.")
 
@@ -88,8 +86,8 @@ defmodule LearnElixirFinalWeb.UserSettingsLive do
 
   def mount(_params, _session, socket) do
     user = socket.assigns.current_user
-    email_changeset = Accounts.change_user_email(user)
-    password_changeset = Accounts.change_user_password(user)
+    email_changeset = LearnElixirFinal.change_user_email(user)
+    password_changeset = LearnElixirFinal.change_user_password(user)
 
     socket =
       socket
@@ -108,7 +106,7 @@ defmodule LearnElixirFinalWeb.UserSettingsLive do
 
     email_form =
       socket.assigns.current_user
-      |> Accounts.change_user_email(user_params)
+      |> LearnElixirFinal.change_user_email(user_params)
       |> Map.put(:action, :validate)
       |> to_form()
 
@@ -119,9 +117,9 @@ defmodule LearnElixirFinalWeb.UserSettingsLive do
     %{"current_password" => password, "user" => user_params} = params
     user = socket.assigns.current_user
 
-    case Accounts.apply_user_email(user, password, user_params) do
+    case LearnElixirFinal.apply_user_email(user, password, user_params) do
       {:ok, applied_user} ->
-        Accounts.deliver_user_update_email_instructions(
+        LearnElixirFinal.deliver_user_update_email_instructions(
           applied_user,
           user.email,
           &url(~p"/users/settings/confirm_email/#{&1}")
@@ -140,7 +138,7 @@ defmodule LearnElixirFinalWeb.UserSettingsLive do
 
     password_form =
       socket.assigns.current_user
-      |> Accounts.change_user_password(user_params)
+      |> LearnElixirFinal.change_user_password(user_params)
       |> Map.put(:action, :validate)
       |> to_form()
 
@@ -151,11 +149,11 @@ defmodule LearnElixirFinalWeb.UserSettingsLive do
     %{"current_password" => password, "user" => user_params} = params
     user = socket.assigns.current_user
 
-    case Accounts.update_user_password(user, password, user_params) do
+    case LearnElixirFinal.update_user_password(user, password, user_params) do
       {:ok, user} ->
         password_form =
           user
-          |> Accounts.change_user_password(user_params)
+          |> LearnElixirFinal.change_user_password(user_params)
           |> to_form()
 
         {:noreply, assign(socket, trigger_submit: true, password_form: password_form)}

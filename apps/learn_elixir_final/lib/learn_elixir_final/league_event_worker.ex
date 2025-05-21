@@ -13,6 +13,8 @@ defmodule LearnElixirFinal.LeagueEventWorker do
   @league_account_discovered_event "league_account_discovered_event"
   @league_account_added_event "league_account_added_event"
   @league_match_added_event "league_match_added_event"
+  @user_match_listening_event "user_match_listening_event"
+  @league_account_match_listening_event "league_account_match_listening_event"
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{
