@@ -33,7 +33,8 @@ config :learn_elixir_final, Oban,
     league_events_americas: 5,
     league_events_europe: 5,
     league_events_asia: 5,
-    league_events_sea: 5
+    league_events_sea: 5,
+    league_events: 5
   ]
 
 config :riot_client, :riot_api_key, "RGAPI-92ba860d-988d-4edc-9e86-d52fb2ddfdc5"

@@ -1,9 +1,11 @@
 defmodule LearnElixirFinalPg.League do
   alias EctoShorts.Actions
   alias LearnElixirFinalPg.League.{
+    LeagueAccountMatchAggregate,
     LeagueAccount,
     LeagueMatch,
     MatchParticipant,
+    UserMatchAggregate
    # UserLeagueAccount
   }
   alias LearnElixirFinalPg.Repo
@@ -124,5 +126,26 @@ defmodule LearnElixirFinalPg.League do
 
   def preload_thirty_participants(user_or_league_account) do
     Repo.preload(user_or_league_account, [match_participants: MatchParticipant.last_thirty_query()])
+  end
+
+  def preload_match_participants_users_and_league_accounts(match_participant) do
+    Repo.preload(match_participant, [:users, :league_accounts])
+  end
+
+  # Aggregates
+  def find_or_create_user_match_aggregate(params) do
+    Actions.find_or_create(UserMatchAggregate, params)
+  end
+
+  def update_user_match_aggregate(user_match_aggregate, params) do
+    Actions.update(UserMatchAggregate, user_match_aggregate, params)
+  end
+
+  def find_or_create_league_account_match_aggregate(params) do
+    Actions.find_or_create(LeagueAccountMatchAggregate, params)
+  end
+
+  def update_league_account_match_aggregate(league_account_match_aggregate, params) do
+    Actions.update(LeagueAccountMatchAggregate, league_account_match_aggregate, params)
   end
 end

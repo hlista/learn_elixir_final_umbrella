@@ -5,6 +5,8 @@ defmodule LearnElixirFinal.LeagueEventWorker do
   unique: [period: 300, states: [:available, :scheduled, :executing]]
 
   alias LearnElixirFinal.LeagueEventWorker.{
+    AggregateLeagueAccountMatchesEvent,
+    AggregateUserMatchesEvent,
     UserMatchListeningEvent,
     LeagueAccountMatchListeningEvent,
     LeagueMatchFoundEvent,
@@ -16,6 +18,8 @@ defmodule LearnElixirFinal.LeagueEventWorker do
   @league_match_participant_found_event "league_match_participant_found_event"
   @user_match_listening_event "user_match_listening_event"
   @league_account_match_listening_event "league_account_match_listening_event"
+  @aggregate_user_matches_event "aggregate_user_matches_event"
+  @aggregate_league_account_matches_event "aggregate_league_account_matches_event"
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{
@@ -58,9 +62,37 @@ defmodule LearnElixirFinal.LeagueEventWorker do
   }}) do
     with {:ok, _} <- LeagueAccount.find_or_create_league_account(league_match_participant_info.puuid),
     {:ok, %{
-      league_match_participant: league_match_participant
+      users: users,
+      league_accounts: league_accounts
     }} <- LeagueMatchParticipantFoundEvent.maybe_create_league_match_participant(league_match_participant_info) do
+      bulk_queue_aggregate_user_matches_event(users)
+      bulk_queue_aggregate_league_account_matches_event(league_accounts)
+    end
+  end
 
+  @impl Oban.Worker
+  def perform(%Oban.Job{args: %{
+    "event" => @aggregate_user_matches_event,
+    "user_id" => user_id
+  }}) do
+    with {:ok, _} <- AggregateUserMatchesEvent.update_user_match_aggregate(user_id) do
+      Absinthe.Subscription.publish(
+        LearnElixirFinalWeb.Endpoint,
+        %{},
+        user_match_added: "user_match_added:#{user_id}")
+    end
+  end
+
+  @impl Oban.Worker
+  def perform(%Oban.Job{args: %{
+    "event" => @aggregate_league_account_matches_event,
+    "league_account_id" => league_account_id
+  }}) do
+    with {:ok, _} <- AggregateLeagueAccountMatchesEvent.update_league_account_match_aggregate(league_account_id) do
+      Absinthe.Subscription.publish(
+        LearnElixirFinalWeb.Endpoint,
+        %{},
+        league_account_match_added: "league_account_match_added:#{league_account_id}")
     end
   end
 
@@ -111,6 +143,28 @@ defmodule LearnElixirFinal.LeagueEventWorker do
         region: region,
         event: @league_match_participant_found_event
       }, queue: get_region_queue(region), worker: __MODULE__)
+    end)
+    |> Oban.insert_all()
+  end
+
+  def bulk_queue_aggregate_user_matches_event(users) do
+    users
+    |> Enum.map(fn user ->
+      Oban.Job.new(%{
+        user_id: user.id,
+        event: @aggregate_user_matches_event
+      }, queue: :league_events, worker: __MODULE__)
+    end)
+    |> Oban.insert_all()
+  end
+
+  def bulk_queue_aggregate_league_account_matches_event(league_accounts) do
+    league_accounts
+    |> Enum.map(fn league_account ->
+      Oban.Job.new(%{
+        league_account_id: league_account.id,
+        event: @aggregate_league_account_matches_event
+      }, queue: :league_events, worker: __MODULE__)
     end)
     |> Oban.insert_all()
   end
