@@ -7,10 +7,13 @@ defmodule LearnElixirFinal.LeagueEventWorker do
   alias LearnElixirFinal.LeagueEventWorker.{
     UserMatchListeningEvent,
     LeagueAccountMatchListeningEvent,
-    LeagueMatchAddedEvent
+    LeagueMatchFoundEvent,
+    LeagueMatchParticipantFoundEvent
   }
+  alias LearnElixirFinal.LeagueAccount
 
-  @league_match_added_event "league_match_added_event"
+  @league_match_found_event "league_match_found_event"
+  @league_match_participant_found_event "league_match_participant_found_event"
   @user_match_listening_event "user_match_listening_event"
   @league_account_match_listening_event "league_account_match_listening_event"
 
@@ -27,35 +30,37 @@ defmodule LearnElixirFinal.LeagueEventWorker do
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{
     "event" => @league_account_match_listening_event,
-    "puuid" => puuid,
-    "region" => region
-  }}) do
-    with {:ok, match_ids} <- LeagueAccountMatchListeningEvent.find_league_account_matches(puuid, region) do
-      bulk_queue_league_match_added_event(match_ids, region)
-    end
-  end
-
-  @impl Oban.Worker
-  def perform(%Oban.Job{args: %{
-    "event" => @league_account_match_listening_event,
     "puuid" => puuid
   }}) do
-    with {:ok, league_account} <- LeagueAccountMatchListeningEvent.find_and_create_league_account(puuid),
-    {:ok, match_ids} <- LeagueAccountMatchListeningEvent.find_league_account_matches(puuid, league_account.region) do
-      bulk_queue_league_match_added_event(match_ids, league_account.region)
+    with {:ok, league_account} <- LeagueAccount.find_or_create_league_account(puuid),
+    {:ok, match_ids} <- LeagueAccountMatchListeningEvent.find_league_account_matches(league_account) do
+      bulk_queue_league_match_found_event(match_ids, league_account.region)
     end
   end
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{
-    "event" => @league_match_added_event,
+    "event" => @league_match_found_event,
     "league_match_id" => league_match_id,
     "region" => region
   }}) do
     with {:ok, %{
-      league_match: league_match
-    }} <- LeagueMatchAddedEvent.create_league_match(league_match_id, region) do
-      LearnElixirFinal.PubSub.MatchAdded.notify_match_added(league_match.id)
+      match_participants_info: match_participants_info
+    }} <- LeagueMatchFoundEvent.maybe_create_league_match(league_match_id, region) do
+      bulk_queue_league_match_participant_found_event(match_participants_info, region)
+    end
+  end
+
+  @impl Oban.Worker
+  def perform(%Oban.Job{args: %{
+    "event" => @league_match_participant_found_event,
+    "participant" => league_match_participant_info
+  }}) do
+    with {:ok, _} <- LeagueAccount.find_or_create_league_account(league_match_participant_info.puuid),
+    {:ok, %{
+      league_match_participant: league_match_participant
+    }} <- LeagueMatchParticipantFoundEvent.maybe_create_league_match_participant(league_match_participant_info) do
+
     end
   end
 
@@ -72,8 +77,7 @@ defmodule LearnElixirFinal.LeagueEventWorker do
     |> Enum.map(fn league_account ->
       Oban.Job.new(%{
         puuid: league_account.puuid,
-        event: @league_account_match_listening_event,
-        region: league_account.region
+        event: @league_account_match_listening_event
       }, queue: get_region_queue(league_account.region), worker: __MODULE__)
     end)
     |> Oban.insert_all()
@@ -87,13 +91,25 @@ defmodule LearnElixirFinal.LeagueEventWorker do
     Oban.insert(job)
   end
 
-  def bulk_queue_league_match_added_event(match_ids, region) do
+  def bulk_queue_league_match_found_event(match_ids, region) do
     match_ids
     |> Enum.map(fn match_id ->
       Oban.Job.new(%{
         league_match_id: match_id,
         region: region,
-        event: @league_match_added_event
+        event: @league_match_found_event
+      }, queue: get_region_queue(region), worker: __MODULE__)
+    end)
+    |> Oban.insert_all()
+  end
+
+  def bulk_queue_league_match_participant_found_event(participants_info, region) do
+    participants_info
+    |> Enum.map(fn participant_info ->
+      Oban.Job.new(%{
+        participant: participant_info,
+        region: region,
+        event: @league_match_participant_found_event
       }, queue: get_region_queue(region), worker: __MODULE__)
     end)
     |> Oban.insert_all()

@@ -1,37 +1,30 @@
-defmodule LearnElixirFinal.LeagueEventWorker.LeagueMatchAddedEvent do
+defmodule LearnElixirFinal.LeagueEventWorker.LeagueMatchFoundEvent do
   alias LearnElixirFinalPg.League
+
+  def maybe_create_league_match(match_id, region) do
+    case League.find_league_match(%{match_id: match_id}) do
+      {:ok, _} ->
+        {:ok, "League Match Already Created"}
+      {:error, _} ->
+        create_league_match(match_id, region)
+    end
+  end
 
   def create_league_match(match_id, region) do
     with {:ok, match_payload} <- RiotClient.get_match(region, match_id),
-      {:ok, league_match} <- League.find_and_upsert_league_match(%{
-        match_id: match_id,
-        region: region
-      },
-      match_update_fields(match_payload)),
-      {:ok, match_participants} <- populate_match_participants(league_match, match_payload["info"]["participants"]) do
-        {:ok, %{
-          league_match: league_match,
-          match_participants: match_participants
-        }}
+         {:ok, league_match} <- League.create_league_match(match_create_fields(match_id, region, match_payload)),
+         {:ok, match_participants_info} <- get_match_participants_info(league_match, match_payload["info"]["participants"]) do
+      {:ok, %{
+        league_match: league_match,
+        match_participants_info: match_participants_info
+      }}
     end
   end
-  # def populate_match_info(league_match_id) do
-  #   with {:ok, %{
-  #     match_id: match_id,
-  #     region: region
-  #   }} <- League.find_league_match(%{id: league_match_id}),
-  #     {:ok, match_payload} <- RiotClient.get_match(region, match_id),
-  #     {:ok, league_match} <- update_league_match_info(league_match_id, match_payload),
-  #     {:ok, match_participants} <- populate_match_participants(league_match, match_payload["info"]["participants"]) do
-  #       {:ok, %{
-  #         league_match: league_match,
-  #         match_participants: match_participants
-  #       }}
-  #   end
-  # end
 
-  def match_update_fields(match_payload) do
+  def match_create_fields(match_id, region, match_payload) do
     %{
+      match_id: match_id,
+      region: region,
       game_duration: match_payload["info"]["gameDuration"],
       game_end_timestamp: DateTime.from_unix!(match_payload["info"]["gameEndTimestamp"], :millisecond),
       game_id: match_payload["info"]["gameId"],
@@ -40,20 +33,8 @@ defmodule LearnElixirFinal.LeagueEventWorker.LeagueMatchAddedEvent do
     }
   end
 
-  # def update_league_match_info(league_match_id, match_payload) do
-  #   match_update_fields = %{
-  #     game_duration: match_payload["info"]["gameDuration"],
-  #     game_end_timestamp: DateTime.from_unix!(match_payload["info"]["gameEndTimestamp"], :millisecond),
-  #     game_id: match_payload["info"]["gameId"],
-  #     game_name: match_payload["info"]["gameName"],
-  #     participants: match_payload["metadata"]["participants"]
-  #   }
-  #   League.update_league_match(league_match_id, match_update_fields)
-  # end
-
-  defp populate_match_participants(league_match, participants) do
-    participants
-    |> Enum.map(fn participant ->
+  def get_match_participants_info(league_match, participants) do
+    Enum.map(participants, fn participant ->
       %{
         puuid: participant["puuid"],
         assists: participant["assists"],
@@ -88,6 +69,5 @@ defmodule LearnElixirFinal.LeagueEventWorker.LeagueMatchAddedEvent do
         game_end_timestamp: league_match.game_end_timestamp
       }
     end)
-    |> League.find_or_create_many_match_participant()
   end
 end
