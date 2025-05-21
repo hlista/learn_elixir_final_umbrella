@@ -2,7 +2,10 @@ defmodule LearnElixirFinalPg.League.MatchParticipant do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
-  alias LearnElixirFinalPg.League.LeagueMatch
+  alias LearnElixirFinalPg.League.{
+    LeagueMatch,
+    LeagueAccount
+  }
 
   @required_fields [
     :puuid,
@@ -73,7 +76,7 @@ defmodule LearnElixirFinalPg.League.MatchParticipant do
     field :game_end_timestamp, :utc_datetime
     belongs_to :league_match, LeagueMatch
     has_many :league_accounts,
-      MatchParticipant, foreign_key: :puuid, references: :puuid
+      LeagueAccount, foreign_key: :puuid, references: :puuid
     has_many :users, through: [:league_accounts, :users]
     timestamps()
   end
