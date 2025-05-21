@@ -21,6 +21,8 @@ defmodule LearnElixirFinalPg.League.LeagueMatch do
     field :game_name, :string
     field :participants, {:array, :string}
     has_many :match_participants, MatchParticipant
+    has_many :users, through: [:match_participants, :users]
+    has_many :league_accounts, through: [:match_participants, :league_accounts]
     timestamps()
   end
 

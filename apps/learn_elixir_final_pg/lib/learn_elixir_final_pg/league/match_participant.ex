@@ -72,6 +72,9 @@ defmodule LearnElixirFinalPg.League.MatchParticipant do
     field :win, :boolean
     field :game_end_timestamp, :utc_datetime
     belongs_to :league_match, LeagueMatch
+    has_many :league_accounts,
+      MatchParticipant, foreign_key: :puuid, references: :puuid
+    has_many :users, through: [:league_accounts, :users]
     timestamps()
   end
 
