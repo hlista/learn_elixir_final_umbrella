@@ -26,8 +26,7 @@ defmodule LearnElixirFinalWeb.Subscription.Janitor do
   defp clean_empty_topics do
     for topic <- Tracker.list_topics() do
       case Presence.list(topic) do
-        %{} ->
-          IO.inspect("cleaning topic #{topic}")
+        map when map_size(map) == 0 ->
           Tracker.untrack(topic)
         _ -> :ok
       end
