@@ -14,6 +14,18 @@ defmodule LearnElixirFinalWeb.LearnElixirFinalProxy do
     |> Enum.random()
   end
 
+  def add_user_league_account_by_game_name_tag_line(user_id, game_name, tag_line) do
+    call_on_random_node(:add_user_league_account_by_game_name_tag_line, [user_id, game_name, tag_line])
+  end
+
+  def add_user_league_account_by_puuid(user_id, puuid) do
+    call_on_random_node(:add_user_league_account_by_puuid, [user_id, puuid])
+  end
+
+  def remove_user_league_account(user_id, puuid) do
+    call_on_random_node(:remove_user_league_account, [user_id, puuid])
+  end
+
   ### Deliver Emails
   def deliver_user_confirmation_instructions(user, url) do
     call_on_random_node(:deliver_user_confirmation_instructions, [user, url])
@@ -94,5 +106,4 @@ defmodule LearnElixirFinalWeb.LearnElixirFinalProxy do
   def get_user_by_session_token(session_binary) do
     call_on_random_node(:get_user_by_session_token, [session_binary])
   end
-
 end

@@ -5,8 +5,8 @@ defmodule LearnElixirFinalPg.League do
     LeagueAccount,
     LeagueMatch,
     MatchParticipant,
-    UserMatchAggregate
-   # UserLeagueAccount
+    UserMatchAggregate,
+    UserLeagueAccount
   }
   alias LearnElixirFinalPg.Repo
 
@@ -147,5 +147,19 @@ defmodule LearnElixirFinalPg.League do
 
   def update_league_account_match_aggregate(league_account_match_aggregate, params) do
     Actions.update(LeagueAccountMatchAggregate, league_account_match_aggregate, params)
+  end
+
+  # User League Account
+
+  def find_user_league_account(params, opts \\ []) do
+    Actions.find(UserLeagueAccount, params, opts)
+  end
+
+  def find_or_create_user_league_account(params, opts \\ []) do
+    Actions.find_or_create(UserLeagueAccount, params, opts)
+  end
+
+  def delete_user_league_account(id, opts \\ []) do
+    Actions.delete(UserLeagueAccount, id, opts)
   end
 end

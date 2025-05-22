@@ -1,24 +1,21 @@
 defmodule LearnElixirFinalWeb.Resolvers.LeagueAccountResolver do
-
-  def add_summoner(%{
-    region: region,
+  alias LearnElixirFinalWeb.LearnElixirFinalProxy
+  def add_summoner_by_game_name_tag_line(%{
     tag_line: tag_line,
     game_name: game_name
   }, %{current_user: user}) do
-    # with {:ok, %{"puuid" => puuid}} <- RiotClient.get_account_by_riot_id(region, game_name, tag_line),
-    #   {:ok, league_account} <- Leagues.find_or_create_league_account(%{
-    #     region: region,
-    #     tag_line: tag_line,
-    #     game_name: game_name,
-    #     puuid: puuid
-    #   }),
-    #   {:ok, _} <- Leagues.create_user_league_account(%{user_id: user.id, league_account_id: league_account.id}),
-    #   {:ok, _} <- LearnElixirFinal.LeagueAccountWorker.queue_account(league_account) do
-    #     {:ok, league_account}
-    # end
+    LearnElixirFinalProxy.add_user_league_account_by_game_name_tag_line(user.id, game_name, tag_line)
   end
 
-  def remove_summoner(_, _) do
+  def add_summoner_by_puuid(%{
+    puuid: puuid
+  }, %{current_user: user}) do
+    LearnElixirFinalProxy.add_user_league_account_by_puuid(user.id, puuid)
+  end
 
+  def remove_summoner(%{
+    puuid: puuid
+  }, %{current_user: user}) do
+    LearnElixirFinalProxy.remove_user_league_account(user.id, puuid)
   end
 end

@@ -5,16 +5,21 @@ defmodule LearnElixirFinalWeb.Schema do
     User,
     LeagueAccount,
     LeagueMatch,
-    # LeagueMatchParticipant
+    LeagueMatchParticipant,
+    MatchAggregate
   }
   import_types LearnElixirFinalWeb.Schema.Queries.User
-  import_types LearnElixirFinalWeb.Schema.Mutations.User
+  import_types LearnElixirFinalWeb.Schema.Mutations.{
+    LeagueAccount,
+    User
+  }
   import_types LearnElixirFinalWeb.Schema.Subscriptions.User
   query do
     import_fields :user_queries
   end
   mutation do
     import_fields :user_mutations
+    import_fields :league_account_mutations
   end
   subscription do
     import_fields :user_subscriptions

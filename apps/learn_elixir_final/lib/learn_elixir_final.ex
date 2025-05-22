@@ -1,34 +1,24 @@
 defmodule LearnElixirFinal do
   alias LearnElixirFinalPg.Accounts
-  def add_user_summoner_by_game_name_tag_line(user_id, game_name, tag_line) do
+  alias LearnElixirFinal.LeagueAccount
 
-  end
+  defdelegate add_user_league_account_by_game_name_tag_line(user_id, game_name, tag_line), to: LeagueAccount
 
-  def add_user_summoner_by_puuid(user_id, puuid) do
+  defdelegate add_user_league_account_by_puuid(user_id, puuid), to: LeagueAccount
 
-  end
-
-  def remove_user_summoner(user_id, league_account_id) do
-
-  end
-
-  def queue_user_match_listening_event(user_id) do
-
-  end
-
-  def queue_league_account_match_listening_event(league_account_id) do
-
-  end
+  defdelegate remove_user_league_account(user_id, puuid), to: LeagueAccount
 
   ### Deliver Emails
   def deliver_user_confirmation_instructions(user, url) do
     url_fun = &("#{url}#{&1}")
     Accounts.deliver_user_confirmation_instructions(user, url_fun)
   end
+
   def deliver_user_update_email_instructions(user, email, url) do
     url_fun = &("#{url}#{&1}")
     Accounts.deliver_user_update_email_instructions(user, email, url_fun)
   end
+
   def deliver_user_reset_password_instructions(user, url) do
     url_fun = &("#{url}#{&1}")
     Accounts.deliver_user_reset_password_instructions(user, url_fun)
