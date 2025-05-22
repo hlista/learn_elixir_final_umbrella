@@ -4,7 +4,8 @@ defmodule LearnElixirFinalPg.League.LeagueAccount do
   alias LearnElixirFinalPg.Accounts.User
   alias LearnElixirFinalPg.League.{
     MatchParticipant,
-    UserLeagueAccount
+    UserLeagueAccount,
+    LeagueAccountMatchAggregate
   }
 
   @required_fields []
@@ -30,6 +31,7 @@ defmodule LearnElixirFinalPg.League.LeagueAccount do
                 User,
                 join_through: UserLeagueAccount,
                 join_keys: [league_account_id: :id, user_id: :id]
+    has_one :match_aggregate, LeagueAccountMatchAggregate
     timestamps()
   end
 

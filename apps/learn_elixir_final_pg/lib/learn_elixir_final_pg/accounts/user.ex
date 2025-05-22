@@ -3,7 +3,8 @@ defmodule LearnElixirFinalPg.Accounts.User do
   import Ecto.Changeset
   alias LearnElixirFinalPg.League.{
     LeagueAccount,
-    UserLeagueAccount
+    UserLeagueAccount,
+    UserMatchAggregate
   }
 
   schema "users" do
@@ -18,6 +19,7 @@ defmodule LearnElixirFinalPg.Accounts.User do
                  join_through: UserLeagueAccount,
                  join_keys: [user_id: :id, league_account_id: :id]
     has_many :match_participants, through: [:league_accounts, :match_participants]
+    has_one :match_aggregate, UserMatchAggregate
     timestamps()
   end
 

@@ -24,4 +24,15 @@ defmodule LearnElixirFinalWeb.Schema do
   subscription do
     import_fields :user_subscriptions
   end
+
+  def context(ctx) do
+    source = LearnElixirFinalWeb.Dataloader.Erpc.new(LearnElixirFinalPg.Repo)
+    dataloader = Dataloader.add_source(Dataloader.new(), LearnElixirFinalWeb, source)
+
+    Map.put(ctx, :loader, dataloader)
+  end
+
+  def plugins do
+    [Absinthe.Middleware.Dataloader] ++ Absinthe.Plugin.defaults()
+  end
 end

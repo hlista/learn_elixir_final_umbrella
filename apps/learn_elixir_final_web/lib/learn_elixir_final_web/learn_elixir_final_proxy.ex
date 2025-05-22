@@ -1,10 +1,17 @@
 defmodule LearnElixirFinalWeb.LearnElixirFinalProxy do
   if Mix.env() === :test do
-    defp call_on_random_node(function, params) do
+    def call_on_random_node(module, function, params) do
+      apply(module, function, params)
+    end
+    def call_on_random_node(function, params) do
       apply(LearnElixirFinal, function, params)
     end
   else
-    defp call_on_random_node(function, params) do
+    def call_on_random_node(module, function, params) do
+      :rpc.call(get_random_node(), module, function, params)
+    end
+
+    def call_on_random_node(function, params) do
         :rpc.call(get_random_node(), LearnElixirFinal, function, params)
     end
 
