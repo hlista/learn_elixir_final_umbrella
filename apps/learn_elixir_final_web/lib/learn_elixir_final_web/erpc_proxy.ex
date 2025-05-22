@@ -17,19 +17,21 @@ defmodule LearnElixirFinalWeb.ErpcProxy do
     end
   else
     def call_on_random_node(%__MODULE__{} = proxy, module, function, params) do
-      proxy
-      |> get_random_node()
-      |> :rpc.call(module, function, params)
+      case get_random_node(proxy) do
+        "" -> {:error, "No Nodes Available"}
+        node ->
+          :rpc.call(node,module, function, params)
+      end
     end
 
     defp get_random_node(%__MODULE__{node_name: nil}) do
-      {:error, "Node name not set"}
+      ""
     end
 
     defp get_random_node(%__MODULE__{node_name: node_name}) do
       available_nodes = Enum.filter(Node.list(),&(to_string(&1) =~ node_name))
       case available_nodes do
-        [] -> {:error, "No Available Nodes"}
+        [] -> ""
         available_nodes -> Enum.random(available_nodes)
       end
     end

@@ -4,6 +4,7 @@ if Code.ensure_loaded?(Ecto) do
       :repo,
       :query,
       :run_batch,
+      :erpc_call,
       repo_opts: [],
       batches: %{},
       results: %{},
@@ -19,9 +20,11 @@ if Code.ensure_loaded?(Ecto) do
             results: map,
             default_params: map,
             run_batch: batch_fun,
+            erpc_call: erpc_fun,
             options: Keyword.t()
           }
 
+    @type erpc_fun :: (module(), :atom, [any()] -> any)
     @type query_fun :: (Ecto.Queryable.t(), any -> Ecto.Queryable.t())
     @type repo_opts :: Keyword.t()
     @type batch_fun :: (Ecto.Queryable.t(), Ecto.Query.t(), any, [any], repo_opts -> [any])
@@ -47,16 +50,16 @@ if Code.ensure_loaded?(Ecto) do
     Dataloader.Ecto.new(MyApp.Repo, repo_opts: [prefix: "tenant"])
     ```
     """
-    @spec new(Ecto.Repo.t(), [opt]) :: t
-    def new(repo, opts \\ []) do
+    @spec new(Ecto.Repo.t(), erpc_fun, [opt]) :: t
+    def new(repo, erpc_call, opts \\ []) do
       data =
         opts
         |> Keyword.put_new(:query, &query/2)
-        |> Keyword.put_new(:run_batch, &run_batch(repo, &1, &2, &3, &4, &5))
+        |> Keyword.put_new(:run_batch, &run_batch(erpc_call, repo, &1, &2, &3, &4, &5))
 
       opts = Keyword.take(opts, [:timeout])
 
-      %__MODULE__{repo: repo, options: opts}
+      %__MODULE__{repo: repo, erpc_call: erpc_call, options: opts}
       |> struct(data)
     end
 
@@ -65,6 +68,7 @@ if Code.ensure_loaded?(Ecto) do
     column
     """
     @spec run_batch(
+            erpc_call :: erpc_fun(),
             repo :: Ecto.Repo.t(),
             queryable :: Ecto.Queryable.t(),
             query :: Ecto.Query.t(),
@@ -72,8 +76,8 @@ if Code.ensure_loaded?(Ecto) do
             inputs :: [any],
             repo_opts :: repo_opts
           ) :: [any]
-    def run_batch(repo, queryable, query, col, inputs, repo_opts) do
-      results = load_rows(col, inputs, queryable, query, repo, repo_opts)
+    def run_batch(erpc_call, repo, queryable, query, col, inputs, repo_opts) do
+      results = load_rows(erpc_call, col, inputs, queryable, query, repo, repo_opts)
       grouped_results = group_results(results, col)
 
       for value <- inputs do
@@ -83,21 +87,21 @@ if Code.ensure_loaded?(Ecto) do
       end
     end
 
-    defp load_rows(col, inputs, queryable, query, repo, repo_opts) do
+    defp load_rows(erpc_call, col, inputs, queryable, query, repo, repo_opts) do
       pk = queryable.__schema__(:primary_key)
 
       case query do
         %Ecto.Query{limit: limit, offset: offset}
         when pk != [col] and (not is_nil(limit) or not is_nil(offset)) ->
-          load_rows_lateral(col, inputs, queryable, query, repo, repo_opts)
+          load_rows_lateral(erpc_call, col, inputs, queryable, query, repo, repo_opts)
 
         _ ->
           query = where(query, [q], field(q, ^col) in ^inputs)
-          all(repo, query, repo_opts)
+          erpc_call.(repo, :all, [query, repo_opts])
       end
     end
 
-    defp load_rows_lateral(col, inputs, queryable, query, repo, repo_opts) do
+    defp load_rows_lateral(erpc_call, col, inputs, queryable, query, repo, repo_opts) do
       # Approximate a postgres unnest with a subquery
       inputs_query =
         queryable
@@ -114,12 +118,12 @@ if Code.ensure_loaded?(Ecto) do
         from(input in subquery(inputs_query), as: :input)
         |> join(:inner_lateral, [], q in subquery(inner_query), on: true)
         |> select([_input, q], q)
-      results = all(repo, query, repo_opts)
+      results = erpc_call.(repo, :all, [query, repo_opts])
 
       case query.preloads do
         [] -> results
         # Preloads can't be used in a subquery, using Repo.preload instead
-        preloads -> preload(repo, results, preloads, repo_opts)
+        preloads -> erpc_call.(repo, :preload, [results, preloads, repo_opts])
       end
     end
 
@@ -133,14 +137,6 @@ if Code.ensure_loaded?(Ecto) do
 
     defp query(schema, _) do
       schema
-    end
-
-    def preload(repo, results, preloads, repo_opts) do
-      LearnElixirFinalWeb.LearnElixirFinalProxy.call_on_random_node(repo, :preload, [results, preloads, repo_opts])
-    end
-
-    def all(repo, query, repo_opts) do
-      LearnElixirFinalWeb.LearnElixirFinalProxy.call_on_random_node(repo, :all, [query, repo_opts])
     end
 
     defimpl Dataloader.Source do
@@ -233,8 +229,8 @@ if Code.ensure_loaded?(Ecto) do
         options[:timeout]
       end
 
-      def async?(%{repo: repo}) do
-        not LearnElixirFinalWeb.LearnElixirFinalProxy.call_on_random_node(repo, :in_transaction?, [])
+      def async?(%{repo: repo, erpc_call: erpc_call}) do
+        not erpc_call.(repo, :in_transaction?, [])
       end
 
       defp chase_down_queryable([field], schema) do
@@ -460,18 +456,18 @@ if Code.ensure_loaded?(Ecto) do
         results =
           if query.limit || query.offset do
             records
-            |> preload_lateral(field, query, source.repo, repo_opts)
+            |> preload_lateral(field, query, source.repo, repo_opts, source.erpc_call)
           else
-            LearnElixirFinalWeb.LearnElixirFinalProxy.call_on_random_node(source.repo, :preload, [records, [{field, query}], repo_opts])
+            source.erpc_call.(source.repo, :preload, [records, [{field, query}], repo_opts])
           end
 
         results = results |> Enum.map(&Map.get(&1, field))
         {key, Map.new(Enum.zip(ids, results))}
       end
 
-      def preload_lateral([], _assoc, _query, _opts), do: []
+      def preload_lateral([], _assoc, _query, _opts, _), do: []
 
-      def preload_lateral([%schema{} = struct | _] = structs, assoc, query, repo, repo_opts) do
+      def preload_lateral([%schema{} = struct | _] = structs, assoc, query, repo, repo_opts, erpc_call) do
         [pk] = schema.__schema__(:primary_key)
 
         # Carry the database prefix across from already-loaded records if not already set
@@ -494,7 +490,7 @@ if Code.ensure_loaded?(Ecto) do
             where: field(x, ^pk) in ^Enum.map(structs, &Map.get(&1, pk)),
             select: {field(x, ^pk), y}
           )
-        results = LearnElixirFinalWeb.LearnElixirFinalProxy.call_on_random_node(repo, :all, [query, repo_opts])
+        results = erpc_call.(repo, :all, [query, repo_opts])
 
         results =
           case query.preloads do
@@ -504,7 +500,7 @@ if Code.ensure_loaded?(Ecto) do
             # Preloads can't be used in a subquery, using Repo.preload instead
             preloads ->
               {keys, vals} = Enum.unzip(results)
-              vals = LearnElixirFinalWeb.LearnElixirFinalProxy.call_on_random_node(repo, :preload, [vals, preloads, repo_opts])
+              vals = erpc_call.(repo, :preload, [vals, preloads, repo_opts])
               Enum.zip(keys, vals)
           end
 

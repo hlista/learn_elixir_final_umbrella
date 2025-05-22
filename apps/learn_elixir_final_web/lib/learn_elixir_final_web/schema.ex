@@ -1,5 +1,7 @@
 defmodule LearnElixirFinalWeb.Schema do
   use Absinthe.Schema
+  alias LearnElixirFinalWeb.ErpcProxy
+
   import_types Absinthe.Type.Custom
   import_types LearnElixirFinalWeb.Types.{
     User,
@@ -26,7 +28,10 @@ defmodule LearnElixirFinalWeb.Schema do
   end
 
   def context(ctx) do
-    source = LearnElixirFinalWeb.Dataloader.Erpc.new(LearnElixirFinalPg.Repo)
+    erpc_call = &ErpcProxy.call_on_random_node(
+      %ErpcProxy{node_name: "learn_elixir_final@"}, &1, &2, &3
+    )
+    source = LearnElixirFinalWeb.Dataloader.Erpc.new(LearnElixirFinalPg.Repo, erpc_call)
     dataloader = Dataloader.add_source(Dataloader.new(), LearnElixirFinalWeb, source)
 
     Map.put(ctx, :loader, dataloader)
