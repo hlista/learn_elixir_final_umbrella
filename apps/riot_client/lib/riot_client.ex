@@ -16,6 +16,8 @@ defmodule RiotClient do
     case HttpQueue.enqueue_request(req) do
       {:ok, %{status: 200, body: body}} ->
         Jason.decode(body)
+      {:ok, %{body: body}} ->
+        {:error, Jason.decode!(body)}
       e -> e
     end
   end
@@ -33,6 +35,8 @@ defmodule RiotClient do
     case HttpQueue.enqueue_request(req) do
       {:ok, %{status: 200, body: body}} ->
         Jason.decode(body)
+      {:ok, %{body: body}} ->
+        {:error, Jason.decode!(body)}
       e -> e
     end
   end
@@ -50,6 +54,8 @@ defmodule RiotClient do
     case HttpQueue.enqueue_request(req) do
       {:ok, %{status: 200, body: body}} ->
         Jason.decode(body)
+     {:ok, %{body: body}} ->
+        {:error, Jason.decode!(body)}
       e -> e
     end
   end
@@ -67,6 +73,8 @@ defmodule RiotClient do
     case HttpQueue.enqueue_request(req) do
       {:ok, %{status: 200, body: body}} ->
         Jason.decode(body)
+      {:ok, %{body: body}} ->
+        {:error, Jason.decode!(body)}
       e -> e
     end
   end
@@ -84,6 +92,8 @@ defmodule RiotClient do
     case HttpQueue.enqueue_request(req) do
       {:ok, %{status: 200, body: body}} ->
         Jason.decode(body)
+      {:ok, %{body: body}} ->
+        {:error, Jason.decode!(body)}
       e -> e
     end
   end

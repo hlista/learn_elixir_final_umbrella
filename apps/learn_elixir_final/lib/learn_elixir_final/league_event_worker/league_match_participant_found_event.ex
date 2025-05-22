@@ -1,6 +1,9 @@
 defmodule LearnElixirFinal.LeagueEventWorker.LeagueMatchParticipantFoundEvent do
   alias LearnElixirFinalPg.League
   def maybe_create_league_match_participant(participant_info) do
+    participant_info = participant_info
+    |> Enum.map(fn {k, v} -> {String.to_existing_atom(k), v} end)
+    |> Enum.into(%{})
     case League.find_match_participant(%{puuid: participant_info.puuid, league_match_id: participant_info.league_match_id}) do
       {:ok, _} -> {:ok, "participant already created"}
       {:error, _} ->

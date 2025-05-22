@@ -56,14 +56,15 @@ defmodule LearnElixirFinalWeb.MixProject do
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
-      {:learn_elixir_final, in_umbrella: true},
+      {:learn_elixir_final, in_umbrella: true, only: :test},
+      {:learn_elixir_final_pg, in_umbrella: true},
       {:jason, "~> 1.2"},
       {:bandit, "~> 1.5"},
       {:absinthe, "~> 1.7"},
       {:absinthe_plug, "~> 1.5"},
       {:absinthe_phoenix, "~> 2.0.0"},
-      {:dataloader, "~> 1.0.0"},
       {:phoenix_pubsub, "~> 2.0"},
+      {:libcluster, "~> 3.3"}
     ]
   end
 

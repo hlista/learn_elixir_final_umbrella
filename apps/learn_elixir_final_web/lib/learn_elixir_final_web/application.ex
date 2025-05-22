@@ -8,15 +8,22 @@ defmodule LearnElixirFinalWeb.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      LearnElixirFinalWeb.Telemetry,
+      # {
+      #   Cluster.Supervisor,
+      #   [Application.get_env(:libcluster, :topologies),
+      #   [name: LearnElixirFinalWeb.ClusterSupervisor]]
+      # },
+      #LearnElixirFinalWeb.Telemetry,
+      #{DNSCluster, query: Application.get_env(:learn_elixir_final, :dns_cluster_query) || :ignore},
       # Start a worker by calling: LearnElixirFinalWeb.Worker.start_link(arg)
       # {LearnElixirFinalWeb.Worker, arg},
       # Start to serve requests, typically the last entry
+      LearnElixirFinalWeb.Endpoint,
+      {Phoenix.PubSub, name: LearnElixirFinalWeb.PubSub},
+      {Absinthe.Subscription, LearnElixirFinalWeb.Endpoint},
       LearnElixirFinalWeb.Subscription.Tracker,
       LearnElixirFinalWeb.Subscription.Presence,
       LearnElixirFinalWeb.Subscription.Janitor,
-      LearnElixirFinalWeb.Endpoint,
-      {Absinthe.Subscription, LearnElixirFinalWeb.Endpoint},
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

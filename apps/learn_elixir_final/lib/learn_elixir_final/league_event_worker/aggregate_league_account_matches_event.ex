@@ -38,12 +38,12 @@ defmodule LearnElixirFinal.LeagueEventWorker.AggregateLeagueAccountMatchesEvent 
       avg_magic_damage_dealt_to_champions: calculate_average(match_participants, :magic_damage_dealt_to_champions),
       avg_magic_damage_taken: calculate_average(match_participants, :magic_damage_taken),
       avg_physical_damage_dealt: calculate_average(match_participants, :physical_damage_dealt),
-      avg_physical_damage_dealt_to_champions: calculate_average(match_participants, :baron_physical_damage_dealt_to_championskills),
+      avg_physical_damage_dealt_to_champions: calculate_average(match_participants, :physical_damage_dealt_to_champions),
       avg_physical_damage_taken: calculate_average(match_participants, :physical_damage_taken),
       avg_total_damage_dealt: calculate_average(match_participants, :total_damage_dealt),
       avg_total_damage_dealt_to_champions: calculate_average(match_participants, :total_damage_dealt_to_champions),
       avg_total_damage_taken: calculate_average(match_participants, :total_damage_taken),
-      avg_total_heal: calculate_average(match_participants, :total_hea),
+      avg_total_heal: calculate_average(match_participants, :total_heal),
       avg_total_minions_killed: calculate_average(match_participants, :total_minions_killed),
       avg_total_time_spent_dead: calculate_average(match_participants, :total_time_spent_dead),
       avg_win: calculate_average(match_participants, :win),
@@ -55,7 +55,9 @@ defmodule LearnElixirFinal.LeagueEventWorker.AggregateLeagueAccountMatchesEvent 
     {:ok, league_account_match_aggregate} <-
       League.find_or_create_league_account_match_aggregate(%{league_account_id: league_account_id}) do
       %{match_participants: match_participants} = League.preload_thirty_participants(league_account)
-      update_params = calculate_update_params(match_participants)
+      update_params = match_participants
+      |> Enum.map(& Map.from_struct(&1))
+      |> calculate_update_params()
       League.update_league_account_match_aggregate(league_account_match_aggregate, update_params)
     end
   end

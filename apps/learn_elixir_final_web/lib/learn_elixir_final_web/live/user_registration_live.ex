@@ -2,7 +2,7 @@ defmodule LearnElixirFinalWeb.UserRegistrationLive do
   use LearnElixirFinalWeb, :live_view
 
   alias LearnElixirFinalPg.Accounts.User
-
+  alias LearnElixirFinalWeb.LearnElixirFinalProxy
   def render(assigns) do
     ~H"""
     <div class="mx-auto max-w-sm">
@@ -42,7 +42,7 @@ defmodule LearnElixirFinalWeb.UserRegistrationLive do
   end
 
   def mount(_params, _session, socket) do
-    changeset = LearnElixirFinal.change_user_registration(%User{})
+    changeset = LearnElixirFinalProxy.change_user_registration(%User{})
 
     socket =
       socket
@@ -53,15 +53,15 @@ defmodule LearnElixirFinalWeb.UserRegistrationLive do
   end
 
   def handle_event("save", %{"user" => user_params}, socket) do
-    case LearnElixirFinal.register_user(user_params) do
+    case LearnElixirFinalProxy.register_user(user_params) do
       {:ok, user} ->
         {:ok, _} =
-          LearnElixirFinal.deliver_user_confirmation_instructions(
+          LearnElixirFinalProxy.deliver_user_confirmation_instructions(
             user,
             &url(~p"/users/confirm/#{&1}")
           )
 
-        changeset = LearnElixirFinal.change_user_registration(user)
+        changeset = LearnElixirFinalProxy.change_user_registration(user)
         {:noreply, socket |> assign(trigger_submit: true) |> assign_form(changeset)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -70,7 +70,7 @@ defmodule LearnElixirFinalWeb.UserRegistrationLive do
   end
 
   def handle_event("validate", %{"user" => user_params}, socket) do
-    changeset = LearnElixirFinal.change_user_registration(%User{}, user_params)
+    changeset = LearnElixirFinalProxy.change_user_registration(%User{}, user_params)
     {:noreply, assign_form(socket, Map.put(changeset, :action, :validate))}
   end
 

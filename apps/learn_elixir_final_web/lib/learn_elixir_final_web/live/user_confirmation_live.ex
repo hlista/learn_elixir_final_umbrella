@@ -1,6 +1,6 @@
 defmodule LearnElixirFinalWeb.UserConfirmationLive do
   use LearnElixirFinalWeb, :live_view
-
+  alias LearnElixirFinalWeb.LearnElixirFinalProxy
   def render(%{live_action: :edit} = assigns) do
     ~H"""
     <div class="mx-auto max-w-sm">
@@ -29,7 +29,7 @@ defmodule LearnElixirFinalWeb.UserConfirmationLive do
   # Do not log in the user after confirmation to avoid a
   # leaked token giving the user access to the account.
   def handle_event("confirm_account", %{"user" => %{"token" => token}}, socket) do
-    case LearnElixirFinal.confirm_user(token) do
+    case LearnElixirFinalProxy.confirm_user(token) do
       {:ok, _} ->
         {:noreply,
          socket

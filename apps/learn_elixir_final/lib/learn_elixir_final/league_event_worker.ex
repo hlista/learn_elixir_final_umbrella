@@ -28,6 +28,7 @@ defmodule LearnElixirFinal.LeagueEventWorker do
   }}) do
     with {:ok, league_accounts} <- UserMatchListeningEvent.find_user_league_accounts(user_id) do
       bulk_queue_league_account_match_listening_event(league_accounts)
+      :ok
     end
   end
 
@@ -38,7 +39,8 @@ defmodule LearnElixirFinal.LeagueEventWorker do
   }}) do
     with {:ok, league_account} <- LeagueAccount.find_or_create_league_account(puuid),
     {:ok, match_ids} <- LeagueAccountMatchListeningEvent.find_league_account_matches(league_account) do
-      bulk_queue_league_match_found_event(match_ids, league_account.region)
+      bulk_queue_league_match_found_event(match_ids, league_account.match_region)
+      :ok
     end
   end
 
@@ -52,6 +54,7 @@ defmodule LearnElixirFinal.LeagueEventWorker do
       match_participants_info: match_participants_info
     }} <- LeagueMatchFoundEvent.maybe_create_league_match(league_match_id, region) do
       bulk_queue_league_match_participant_found_event(match_participants_info, region)
+      :ok
     end
   end
 
@@ -60,13 +63,14 @@ defmodule LearnElixirFinal.LeagueEventWorker do
     "event" => @league_match_participant_found_event,
     "participant" => league_match_participant_info
   }}) do
-    with {:ok, _} <- LeagueAccount.find_or_create_league_account(league_match_participant_info.puuid),
+    with {:ok, _} <- LeagueAccount.find_or_create_league_account(league_match_participant_info["puuid"]),
     {:ok, %{
       users: users,
       league_accounts: league_accounts
     }} <- LeagueMatchParticipantFoundEvent.maybe_create_league_match_participant(league_match_participant_info) do
       bulk_queue_aggregate_user_matches_event(users)
       bulk_queue_aggregate_league_account_matches_event(league_accounts)
+      :ok
     end
   end
 
@@ -76,10 +80,12 @@ defmodule LearnElixirFinal.LeagueEventWorker do
     "user_id" => user_id
   }}) do
     with {:ok, _} <- AggregateUserMatchesEvent.update_user_match_aggregate(user_id) do
-      Absinthe.Subscription.publish(
-        LearnElixirFinalWeb.Endpoint,
-        %{},
-        user_match_added: "user_match_added:#{user_id}")
+      # Absinthe.Subscription.publish(
+      #   LearnElixirFinalWeb.Endpoint,
+      #   %{},
+      #   user_match_added: "user_match_added:#{user_id}"
+      # )
+      :ok
     end
   end
 
@@ -89,10 +95,12 @@ defmodule LearnElixirFinal.LeagueEventWorker do
     "league_account_id" => league_account_id
   }}) do
     with {:ok, _} <- AggregateLeagueAccountMatchesEvent.update_league_account_match_aggregate(league_account_id) do
-      Absinthe.Subscription.publish(
-        LearnElixirFinalWeb.Endpoint,
-        %{},
-        league_account_match_added: "league_account_match_added:#{league_account_id}")
+      # Absinthe.Subscription.publish(
+      #   LearnElixirFinalWeb.Endpoint,
+      #   %{},
+      #   league_account_match_added: "league_account_match_added:#{league_account_id}"
+      # )
+      :ok
     end
   end
 

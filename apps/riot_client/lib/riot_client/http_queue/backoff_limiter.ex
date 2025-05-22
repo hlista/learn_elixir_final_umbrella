@@ -38,6 +38,10 @@ defmodule RiotClient.HttpQueue.BackoffLimiter do
     end
   end
 
+  def handle_call(:backoff_ms, _from, %{backoff_until: nil} = state) do
+    {:reply, 0, state}
+  end
+
   def handle_call(:backoff_ms, _from, %{backoff_until: backoff_until} = state) do
     backoff_ms = trunc((backoff_until - now()))
     {:reply, backoff_ms, state}

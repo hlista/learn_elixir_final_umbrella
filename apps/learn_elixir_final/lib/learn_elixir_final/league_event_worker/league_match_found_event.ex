@@ -34,7 +34,8 @@ defmodule LearnElixirFinal.LeagueEventWorker.LeagueMatchFoundEvent do
   end
 
   def get_match_participants_info(league_match, participants) do
-    Enum.map(participants, fn participant ->
+    participants
+    |> Enum.map(fn participant ->
       %{
         puuid: participant["puuid"],
         assists: participant["assists"],
@@ -69,5 +70,6 @@ defmodule LearnElixirFinal.LeagueEventWorker.LeagueMatchFoundEvent do
         game_end_timestamp: league_match.game_end_timestamp
       }
     end)
+    |> then(& {:ok, &1})
   end
 end

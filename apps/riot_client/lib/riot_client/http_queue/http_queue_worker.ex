@@ -69,6 +69,7 @@ defmodule RiotClient.HttpQueue.HttpQueueWorker do
     backoff_limiter_name: backoff_limiter_name,
     retries: retries
   } = req, headers, from_pid) do
+    IO.inspect "received 429 #{backoff_limiter_name}"
     retry_after = get_retry_after(headers)
     BackoffLimiter.notify_429(backoff_limiter_name, retry_after)
     if retries < @max_retries do

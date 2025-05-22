@@ -1,6 +1,6 @@
 defmodule LearnElixirFinalWeb.UserConfirmationInstructionsLive do
   use LearnElixirFinalWeb, :live_view
-
+  alias LearnElixirFinalWeb.LearnElixirFinalProxy
   def render(assigns) do
     ~H"""
     <div class="mx-auto max-w-sm">
@@ -31,8 +31,8 @@ defmodule LearnElixirFinalWeb.UserConfirmationInstructionsLive do
   end
 
   def handle_event("send_instructions", %{"user" => %{"email" => email}}, socket) do
-    if user = LearnElixirFinal.get_user_by_email(email) do
-      LearnElixirFinal.deliver_user_confirmation_instructions(
+    if user = LearnElixirFinalProxy.get_user_by_email(email) do
+      LearnElixirFinalProxy.deliver_user_confirmation_instructions(
         user,
         &url(~p"/users/confirm/#{&1}")
       )
