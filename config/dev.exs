@@ -12,11 +12,11 @@ config :learn_elixir_final_pg, LearnElixirFinalPg.Repo,
 
 config :libcluster,
   topologies: [
-    docker: [
+    local: [
       strategy: Cluster.Strategy.Epmd,
       config: [hosts: [
-        :"learn_elixir_final@learn_elixir_final",
-        :"learn_elixir_final_web@learn_elixir_final_web"
+        :"learn_elixir_final@localhost",
+        :"learn_elixir_final_web@localhost"
       ]],
     ]
   ]

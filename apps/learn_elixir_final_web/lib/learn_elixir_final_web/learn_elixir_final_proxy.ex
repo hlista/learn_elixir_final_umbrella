@@ -1,117 +1,144 @@
 defmodule LearnElixirFinalWeb.LearnElixirFinalProxy do
-  if Mix.env() === :test do
-    def call_on_random_node(module, function, params) do
-      apply(module, function, params)
-    end
-    def call_on_random_node(function, params) do
-      apply(LearnElixirFinal, function, params)
-    end
-  else
-    def call_on_random_node(module, function, params) do
-      :rpc.call(get_random_node(), module, function, params)
-    end
+  alias LearnElixirFinalWeb.ErpcProxy
 
-    def call_on_random_node(function, params) do
-        :rpc.call(get_random_node(), LearnElixirFinal, function, params)
-    end
+  @erpc_proxy %LearnElixirFinalWeb.ErpcProxy{
+    node_name: "learn_elixir_final@"
+  }
 
-    defp get_random_node() do
-      Node.list()
-      |> Enum.filter(&(to_string(&1) =~ "learn_elixir_final@"))
-      |> Enum.random()
-    end
-  end
+  @module LearnElixirFinal
 
   def add_user_league_account_by_game_name_tag_line(user_id, game_name, tag_line) do
-    call_on_random_node(:add_user_league_account_by_game_name_tag_line, [user_id, game_name, tag_line])
+    ErpcProxy.call_on_random_node(
+      @erpc_proxy,
+      @module,
+      :add_user_league_account_by_game_name_tag_line,
+      [user_id, game_name, tag_line]
+    )
   end
 
   def add_user_league_account_by_puuid(user_id, puuid) do
-    call_on_random_node(:add_user_league_account_by_puuid, [user_id, puuid])
+    ErpcProxy.call_on_random_node(
+      @erpc_proxy,
+      @module,
+      :add_user_league_account_by_puuid,
+      [user_id, puuid]
+    )
   end
 
   def remove_user_league_account(user_id, puuid) do
-    call_on_random_node(:remove_user_league_account, [user_id, puuid])
+    ErpcProxy.call_on_random_node(
+      @erpc_proxy,
+      @module,
+      :remove_user_league_account,
+      [user_id, puuid]
+    )
   end
 
   ### Deliver Emails
   def deliver_user_confirmation_instructions(user, url) do
-    call_on_random_node(:deliver_user_confirmation_instructions, [user, url])
+    ErpcProxy.call_on_random_node(@erpc_proxy, @module, :deliver_user_confirmation_instructions, [
+      user,
+      url
+    ])
   end
 
   def deliver_user_update_email_instructions(user, email, url) do
-    call_on_random_node(:deliver_user_update_email_instructions, [user, email, url])
+    ErpcProxy.call_on_random_node(@erpc_proxy, @module, :deliver_user_update_email_instructions, [
+      user,
+      email,
+      url
+    ])
   end
 
   def deliver_user_reset_password_instructions(user, url) do
-    call_on_random_node(:deliver_user_reset_password_instructions, [user, url])
+    ErpcProxy.call_on_random_node(
+      @erpc_proxy,
+      @module,
+      :deliver_user_reset_password_instructions,
+      [
+        user,
+        url
+      ]
+    )
   end
-
 
   ### User Email
   def get_user_by_email(email) do
-    call_on_random_node(:get_user_by_email, [email])
+    ErpcProxy.call_on_random_node(@erpc_proxy, @module, :get_user_by_email, [email])
   end
 
   def change_user_email(user, params \\ %{}) do
-    call_on_random_node(:change_user_email, [user, params])
+    ErpcProxy.call_on_random_node(@erpc_proxy, @module, :change_user_email, [user, params])
   end
 
   def update_user_email(user, token) do
-    call_on_random_node(:update_user_email, [user, token])
+    ErpcProxy.call_on_random_node(@erpc_proxy, @module, :update_user_email, [user, token])
   end
 
   def get_user_by_email_and_password(email, password) do
-    call_on_random_node(:get_user_by_email_and_password, [email, password])
+    ErpcProxy.call_on_random_node(@erpc_proxy, @module, :get_user_by_email_and_password, [
+      email,
+      password
+    ])
   end
 
   def apply_user_email(user, password, user_params) do
-    call_on_random_node(:apply_user_email, [user, password, user_params])
+    ErpcProxy.call_on_random_node(@erpc_proxy, @module, :apply_user_email, [
+      user,
+      password,
+      user_params
+    ])
   end
-
 
   ### User Password
   def update_user_password(user, password, user_params) do
-    call_on_random_node(:update_user_password, [user, password, user_params])
+    ErpcProxy.call_on_random_node(@erpc_proxy, @module, :update_user_password, [
+      user,
+      password,
+      user_params
+    ])
   end
 
   def change_user_password(user, params \\ %{}) do
-    call_on_random_node(:change_user_password, [user, params])
+    ErpcProxy.call_on_random_node(@erpc_proxy, @module, :change_user_password, [user, params])
   end
 
   def reset_user_password(user, user_params) do
-    call_on_random_node(:reset_user_password, [user, user_params])
+    ErpcProxy.call_on_random_node(@erpc_proxy, @module, :reset_user_password, [user, user_params])
   end
 
   def get_user_by_reset_password_token(token) do
-    call_on_random_node(:get_user_by_reset_password_token, [token])
+    ErpcProxy.call_on_random_node(@erpc_proxy, @module, :get_user_by_reset_password_token, [token])
   end
-
 
   ### User Registration
   def register_user(user_params) do
-    call_on_random_node(:register_user, [user_params])
+    ErpcProxy.call_on_random_node(@erpc_proxy, @module, :register_user, [user_params])
   end
 
   def confirm_user(token) do
-    call_on_random_node(:confirm_user, [token])
+    ErpcProxy.call_on_random_node(@erpc_proxy, @module, :confirm_user, [token])
   end
 
   def change_user_registration(user, user_params \\ %{}) do
-    call_on_random_node(:change_user_registration, [user, user_params])
+    ErpcProxy.call_on_random_node(@erpc_proxy, @module, :change_user_registration, [
+      user,
+      user_params
+    ])
   end
-
 
   ### User Session Token
   def generate_user_session_token(user) do
-    call_on_random_node(:generate_user_session_token, [user])
+    ErpcProxy.call_on_random_node(@erpc_proxy, @module, :generate_user_session_token, [user])
   end
 
   def delete_user_session_token(user_token) do
-    call_on_random_node(:delete_user_session_token, [user_token])
+    ErpcProxy.call_on_random_node(@erpc_proxy, @module, :delete_user_session_token, [user_token])
   end
 
   def get_user_by_session_token(session_binary) do
-    call_on_random_node(:get_user_by_session_token, [session_binary])
+    ErpcProxy.call_on_random_node(@erpc_proxy, @module, :get_user_by_session_token, [
+      session_binary
+    ])
   end
 end
