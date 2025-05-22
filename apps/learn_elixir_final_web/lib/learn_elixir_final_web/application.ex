@@ -33,6 +33,7 @@ defmodule LearnElixirFinalWeb.Application do
       LearnElixirFinalWeb.Subscription.Tracker,
       LearnElixirFinalWeb.Subscription.Presence,
       LearnElixirFinalWeb.Subscription.Janitor,
+      LearnElixirFinalWeb.Subscription.EventDispatcher
     ]
   end
 
@@ -54,6 +55,7 @@ defmodule LearnElixirFinalWeb.Application do
       LearnElixirFinalWeb.Subscription.Tracker,
       LearnElixirFinalWeb.Subscription.Presence,
       LearnElixirFinalWeb.Subscription.Janitor,
+      LearnElixirFinalWeb.Subscription.EventDispatcher
     ]
   end
 
@@ -70,6 +72,7 @@ defmodule LearnElixirFinalWeb.Application do
       LearnElixirFinalWeb.Subscription.Tracker,
       LearnElixirFinalWeb.Subscription.Presence,
       LearnElixirFinalWeb.Subscription.Janitor,
+      LearnElixirFinalWeb.Subscription.EventDispatcher
     ]
   end
   # Tell Phoenix to update the endpoint configuration

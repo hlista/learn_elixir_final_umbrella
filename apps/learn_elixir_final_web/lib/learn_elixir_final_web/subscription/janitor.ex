@@ -26,7 +26,9 @@ defmodule LearnElixirFinalWeb.Subscription.Janitor do
   defp clean_empty_topics do
     for topic <- Tracker.list_topics() do
       case Presence.list(topic) do
-        %{} -> Tracker.untrack(topic)
+        %{} ->
+          IO.inspect("cleaning topic #{topic}")
+          Tracker.untrack(topic)
         _ -> :ok
       end
     end

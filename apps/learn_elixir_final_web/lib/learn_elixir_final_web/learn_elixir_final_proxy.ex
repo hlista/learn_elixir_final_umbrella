@@ -34,6 +34,25 @@ defmodule LearnElixirFinalWeb.LearnElixirFinalProxy do
     )
   end
 
+  # Queue listening events
+  def queue_league_account_match_listening_event(puuid) do
+    ErpcProxy.call_on_random_node(
+      @erpc_proxy,
+      @module,
+      :queue_league_account_match_listening_event,
+      [puuid]
+    )
+  end
+
+  def queue_user_match_listening_event(user_id) do
+    ErpcProxy.call_on_random_node(
+      @erpc_proxy,
+      @module,
+      :queue_user_match_listening_event,
+      [user_id]
+    )
+  end
+
   ### Deliver Emails
   def deliver_user_confirmation_instructions(user, url) do
     ErpcProxy.call_on_random_node(@erpc_proxy, @module, :deliver_user_confirmation_instructions, [

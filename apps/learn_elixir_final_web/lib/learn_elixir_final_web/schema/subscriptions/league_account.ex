@@ -5,7 +5,7 @@ defmodule LearnElixirFinalWeb.Schema.Subscriptions.LeagueAccount do
     field :league_account_match_added, :league_match do
       arg :puuid, non_null(:string)
       config fn args, _ ->
-        {:ok, topic: "league_account_match_added:" <> args.puuid}
+        {:ok, topic: "league_account_match_added:#{args.puuid}"}
       end
     end
   end

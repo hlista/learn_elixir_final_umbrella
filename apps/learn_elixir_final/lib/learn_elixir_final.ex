@@ -1,12 +1,20 @@
 defmodule LearnElixirFinal do
   alias LearnElixirFinalPg.Accounts
-  alias LearnElixirFinal.LeagueAccount
+  alias LearnElixirFinal.{
+    LeagueAccount,
+    LeagueEventWorker
+  }
 
+  # Handle League Account
   defdelegate add_user_league_account_by_game_name_tag_line(user_id, game_name, tag_line), to: LeagueAccount
 
   defdelegate add_user_league_account_by_puuid(user_id, puuid), to: LeagueAccount
 
   defdelegate remove_user_league_account(user_id, puuid), to: LeagueAccount
+
+  # Queue Events
+  defdelegate queue_league_account_match_listening_event(puuid), to: LeagueEventWorker
+  defdelegate queue_user_match_listening_event(user_id), to: LeagueEventWorker
 
   ### Deliver Emails
   def deliver_user_confirmation_instructions(user, url) do
