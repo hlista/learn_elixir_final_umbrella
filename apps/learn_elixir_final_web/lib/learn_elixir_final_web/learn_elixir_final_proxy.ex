@@ -1,17 +1,18 @@
 defmodule LearnElixirFinalWeb.LearnElixirFinalProxy do
-  @current_env Mix.env()
-  def call_on_random_node(function, params) do
-    if @current_env === :test do
+  if Mix.env() === :test do
+    defp call_on_random_node(function, params) do
       apply(LearnElixirFinal, function, params)
-    else
-      :rpc.call(get_random_node(), LearnElixirFinal, function, params)
     end
-  end
+  else
+    defp call_on_random_node(function, params) do
+        :rpc.call(get_random_node(), LearnElixirFinal, function, params)
+    end
 
-  def get_random_node() do
-    Node.list()
-    |> Enum.filter(&(to_string(&1) =~ "learn_elixir_final@"))
-    |> Enum.random()
+    defp get_random_node() do
+      Node.list()
+      |> Enum.filter(&(to_string(&1) =~ "learn_elixir_final@"))
+      |> Enum.random()
+    end
   end
 
   def add_user_league_account_by_game_name_tag_line(user_id, game_name, tag_line) do

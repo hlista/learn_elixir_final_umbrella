@@ -3,6 +3,7 @@ defmodule LearnElixirFinalWeb.Schema.Queries.User do
   alias LearnElixirFinalWeb.Resolvers.UserResolver
   object :user_queries do
     field :fetch, :user do
+      middleware LearnElixirFinalWeb.Middleware.Auth
       resolve &UserResolver.fetch/2
     end
 

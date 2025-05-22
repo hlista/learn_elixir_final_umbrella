@@ -9,6 +9,7 @@ defmodule LearnElixirFinalWeb.Schema.Mutations.User do
     end
 
     field :logout, :user do
+      middleware LearnElixirFinalWeb.Middleware.Auth
       resolve &UserResolver.logout/2
     end
   end

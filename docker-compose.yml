@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  learn_elixir_final:
+    build:
+      context: .
+      dockerfile: apps/learn_elixir_final/Dockerfile
+    environment:
+      NODE_NAME: "learn_elixir_final"
+      ELIXIR_COOKIE: "my_cluster_cookie"
+    container_name: service
+
+  learn_elixir_final_web:
+    build:
+      context: .
+      dockerfile: apps/learn_elixir_final_web/Dockerfile
+    environment:
+      NODE_NAME: "learn_elixir_final_web"
+      ELIXIR_COOKIE: "my_cluster_cookie"
+    container_name: web
+    ports:
+      - "4000:4000"
