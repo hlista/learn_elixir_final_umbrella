@@ -1,6 +1,5 @@
 defmodule LearnElixirFinalWeb.Schema do
   use Absinthe.Schema
-  alias LearnElixirFinalWeb.ErpcProxy
 
   import_types Absinthe.Type.Custom
   import_types LearnElixirFinalWeb.Types.{

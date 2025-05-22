@@ -35,9 +35,10 @@ config :learn_elixir_final, Oban,
     league_events_asia: 5,
     league_events_sea: 5,
     league_events: 5
-  ]
+  ],
+  plugins: [Oban.Plugins.Pruner]
 
-config :riot_client, :riot_api_key, "RGAPI-6054a1ea-0f92-40f8-901b-a4b237e71b4d"
+config :riot_client, :riot_api_key, "RGAPI-7e3d4caf-685b-4042-9308-926223949ac7"
 
 # Configures the mailer
 #

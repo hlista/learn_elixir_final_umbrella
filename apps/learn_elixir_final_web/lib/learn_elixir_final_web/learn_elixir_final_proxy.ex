@@ -1,7 +1,6 @@
 defmodule LearnElixirFinalWeb.LearnElixirFinalProxy do
-  alias LearnElixirFinalWeb.ErpcProxy
 
-  @erpc_proxy %LearnElixirFinalWeb.ErpcProxy{
+  @erpc_proxy %ErpcProxy{
     node_name: "learn_elixir_final@"
   }
 

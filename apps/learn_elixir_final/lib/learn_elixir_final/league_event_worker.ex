@@ -12,7 +12,10 @@ defmodule LearnElixirFinal.LeagueEventWorker do
     LeagueMatchFoundEvent,
     LeagueMatchParticipantFoundEvent
   }
-  alias LearnElixirFinal.LeagueAccount
+  alias LearnElixirFinal.{
+    LeagueAccount,
+    LearnElixirFinalWebProxy
+  }
 
   @league_match_found_event "league_match_found_event"
   @league_match_participant_found_event "league_match_participant_found_event"
@@ -80,11 +83,7 @@ defmodule LearnElixirFinal.LeagueEventWorker do
     "user_id" => user_id
   }}) do
     with {:ok, _} <- AggregateUserMatchesEvent.update_user_match_aggregate(user_id) do
-      # Absinthe.Subscription.publish(
-      #   LearnElixirFinalWeb.Endpoint,
-      #   %{},
-      #   user_match_added: "user_match_added:#{user_id}"
-      # )
+      LearnElixirFinalWebProxy.publish(%{}, :user_match_added, "user_match_added:#{user_id}")
       :ok
     end
   end
@@ -95,11 +94,7 @@ defmodule LearnElixirFinal.LeagueEventWorker do
     "league_account_id" => league_account_id
   }}) do
     with {:ok, _} <- AggregateLeagueAccountMatchesEvent.update_league_account_match_aggregate(league_account_id) do
-      # Absinthe.Subscription.publish(
-      #   LearnElixirFinalWeb.Endpoint,
-      #   %{},
-      #   league_account_match_added: "league_account_match_added:#{league_account_id}"
-      # )
+      LearnElixirFinalWebProxy.publish(%{}, :league_account_match_added, "league_account_match_added:#{league_account_id}")
       :ok
     end
   end
@@ -118,7 +113,7 @@ defmodule LearnElixirFinal.LeagueEventWorker do
       Oban.Job.new(%{
         puuid: league_account.puuid,
         event: @league_account_match_listening_event
-      }, queue: get_region_queue(league_account.region), worker: __MODULE__)
+      }, queue: get_region_queue(league_account.match_region), worker: __MODULE__)
     end)
     |> Oban.insert_all()
   end

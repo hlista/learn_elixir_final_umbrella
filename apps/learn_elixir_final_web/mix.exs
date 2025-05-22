@@ -58,6 +58,7 @@ defmodule LearnElixirFinalWeb.MixProject do
       {:gettext, "~> 0.20"},
       {:learn_elixir_final, in_umbrella: true, only: :test},
       {:learn_elixir_final_pg, in_umbrella: true},
+      {:erpc_proxy, in_umbrella: true},
       {:jason, "~> 1.2"},
       {:bandit, "~> 1.5"},
       {:absinthe, "~> 1.7"},

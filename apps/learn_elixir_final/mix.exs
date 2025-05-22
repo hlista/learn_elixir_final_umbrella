@@ -37,7 +37,6 @@ defmodule LearnElixirFinal.MixProject do
   defp deps do
     [
       {:dns_cluster, "~> 0.1.1"},
-      {:phoenix_pubsub, "~> 2.1"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
       {:jason, "~> 1.2"},
@@ -47,7 +46,8 @@ defmodule LearnElixirFinal.MixProject do
       {:oban, "~> 2.19"},
       {:riot_client, in_umbrella: true},
       {:learn_elixir_final_pg, in_umbrella: true},
-      {:libcluster, "~> 3.3"}
+      {:libcluster, "~> 3.3"},
+      {:erpc_proxy, in_umbrella: true},
     ]
   end
 
