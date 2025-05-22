@@ -8,11 +8,11 @@ defmodule LearnElixirFinalWeb.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # {
-      #   Cluster.Supervisor,
-      #   [Application.get_env(:libcluster, :topologies),
-      #   [name: LearnElixirFinalWeb.ClusterSupervisor]]
-      # },
+      {
+        Cluster.Supervisor,
+        [Application.get_env(:libcluster, :topologies),
+        [name: LearnElixirFinalWeb.ClusterSupervisor]]
+      },
       #LearnElixirFinalWeb.Telemetry,
       #{DNSCluster, query: Application.get_env(:learn_elixir_final, :dns_cluster_query) || :ignore},
       # Start a worker by calling: LearnElixirFinalWeb.Worker.start_link(arg)

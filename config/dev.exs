@@ -10,6 +10,23 @@ config :learn_elixir_final_pg, LearnElixirFinalPg.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
+config :libcluster,
+  topologies: [
+    epmd: [
+      # The selected clustering strategy. Required.
+      strategy: Cluster.Strategy.Epmd,
+      # Configuration for the provided strategy. Optional.
+      config: [hosts: [:"learn_elixir_final@localhost", :"learn_elixir_final_web@localhost"]],
+      # The function to use for connecting nodes. The node
+      # name will be appended to the argument list. Optional
+      connect: {:net_kernel, :connect_node, []},
+      # The function to use for disconnecting nodes. The node
+      # name will be appended to the argument list. Optional
+      disconnect: {:erlang, :disconnect_node, []},
+      # The function to use for listing nodes.
+      # This function must return a list of node names. Optional
+      list_nodes: {:erlang, :nodes, [:connected]},
+    ]]
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #

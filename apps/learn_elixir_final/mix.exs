@@ -46,7 +46,8 @@ defmodule LearnElixirFinal.MixProject do
       {:gen_stage, "~> 1.0.0"},
       {:oban, "~> 2.19"},
       {:riot_client, in_umbrella: true},
-      {:learn_elixir_final_pg, in_umbrella: true}
+      {:learn_elixir_final_pg, in_umbrella: true},
+      {:libcluster, "~> 3.3"}
     ]
   end
 

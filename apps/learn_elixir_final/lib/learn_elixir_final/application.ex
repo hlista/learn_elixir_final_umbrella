@@ -8,6 +8,11 @@ defmodule LearnElixirFinal.Application do
   @impl true
   def start(_type, _args) do
     children = [
+      {
+        Cluster.Supervisor,
+        [Application.get_env(:libcluster, :topologies),
+        [name: LearnElixirFinalWeb.ClusterSupervisor]]
+      },
       # {DNSCluster, query: Application.get_env(:learn_elixir_final, :dns_cluster_query) || :ignore},
       # {Phoenix.PubSub, name: LearnElixirFinal.PubSub},
       LearnElixirFinalPg.Repo,

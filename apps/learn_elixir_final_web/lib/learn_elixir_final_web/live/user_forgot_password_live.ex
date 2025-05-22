@@ -34,7 +34,7 @@ defmodule LearnElixirFinalWeb.UserForgotPasswordLive do
     if user = LearnElixirFinalProxy.get_user_by_email(email) do
       LearnElixirFinalProxy.deliver_user_reset_password_instructions(
         user,
-        &url(~p"/users/reset_password/#{&1}")
+        url(~p"/users/reset_password/")
       )
     end
 

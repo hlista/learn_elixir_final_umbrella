@@ -122,7 +122,7 @@ defmodule LearnElixirFinalWeb.UserSettingsLive do
         LearnElixirFinalProxy.deliver_user_update_email_instructions(
           applied_user,
           user.email,
-          &url(~p"/users/settings/confirm_email/#{&1}")
+          url(~p"/users/settings/confirm_email/")
         )
 
         info = "A link to confirm your email change has been sent to the new address."

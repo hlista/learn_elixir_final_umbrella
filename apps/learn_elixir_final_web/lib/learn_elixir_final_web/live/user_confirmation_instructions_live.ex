@@ -34,7 +34,7 @@ defmodule LearnElixirFinalWeb.UserConfirmationInstructionsLive do
     if user = LearnElixirFinalProxy.get_user_by_email(email) do
       LearnElixirFinalProxy.deliver_user_confirmation_instructions(
         user,
-        &url(~p"/users/confirm/#{&1}")
+        url(~p"/users/confirm/")
       )
     end
 

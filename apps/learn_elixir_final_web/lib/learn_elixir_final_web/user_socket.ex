@@ -2,7 +2,7 @@ defmodule LearnElixirFinalWeb.UserSocket do
   use Phoenix.Socket
   use Absinthe.Phoenix.Socket,
     schema: LearnElixirFinalWeb.Schema
-  alias LearnElixirFinalPg.Accounts
+  alias LearnElixirFinalWeb.LearnElixirFinalProxy
 
   def connect(params, socket) do
     with {:ok, session_token} <- get_session_token(params),
@@ -27,7 +27,7 @@ defmodule LearnElixirFinalWeb.UserSocket do
   end
 
   defp get_user_by_session_token(session_binary) do
-    case Accounts.get_user_by_session_token(session_binary) do
+    case LearnElixirFinalProxy.get_user_by_session_token(session_binary) do
       nil -> :error
       user -> {:ok, user}
     end
