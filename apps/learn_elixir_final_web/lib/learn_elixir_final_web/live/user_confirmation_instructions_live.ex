@@ -32,9 +32,10 @@ defmodule LearnElixirFinalWeb.UserConfirmationInstructionsLive do
 
   def handle_event("send_instructions", %{"user" => %{"email" => email}}, socket) do
     if user = LearnElixirFinalProxy.get_user_by_email(email) do
+      url = url(~p"/users/confirm/")
       LearnElixirFinalProxy.deliver_user_confirmation_instructions(
         user,
-        url(~p"/users/confirm/")
+        url
       )
     end
 

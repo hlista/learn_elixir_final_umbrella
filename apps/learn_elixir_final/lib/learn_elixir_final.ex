@@ -21,9 +21,18 @@ defmodule LearnElixirFinal do
   end
 
   ### Deliver Emails
-  defdelegate deliver_user_confirmation_instructions(user, url), to: Accounts
-  defdelegate deliver_user_update_email_instructions(user, email, url), to: Accounts
-  defdelegate deliver_user_reset_password_instructions(user, url), to: Accounts
+  def deliver_user_confirmation_instructions(user, url) do
+    url_fun = &("#{url}#{&1}")
+    Accounts.deliver_user_confirmation_instructions(user, url_fun)
+  end
+  def deliver_user_update_email_instructions(user, email, url) do
+    url_fun = &("#{url}#{&1}")
+    Accounts.deliver_user_update_email_instructions(user, email, url_fun)
+  end
+  def deliver_user_reset_password_instructions(user, url) do
+    url_fun = &("#{url}#{&1}")
+    Accounts.deliver_user_reset_password_instructions(user, url_fun)
+  end
 
   ### User Email
   defdelegate get_user_by_email(email), to: Accounts

@@ -32,9 +32,10 @@ defmodule LearnElixirFinalWeb.UserForgotPasswordLive do
 
   def handle_event("send_email", %{"user" => %{"email" => email}}, socket) do
     if user = LearnElixirFinalProxy.get_user_by_email(email) do
+      url = url(~p"/users/reset_password/")
       LearnElixirFinalProxy.deliver_user_reset_password_instructions(
         user,
-        url(~p"/users/reset_password/")
+        url
       )
     end
 

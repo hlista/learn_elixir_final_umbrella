@@ -55,11 +55,11 @@ defmodule LearnElixirFinalWeb.UserRegistrationLive do
   def handle_event("save", %{"user" => user_params}, socket) do
     case LearnElixirFinalProxy.register_user(user_params) do
       {:ok, user} ->
-        IO.inspect url(~p"/users/confirm/")
+        url = url(~p"/users/confirm/")
         {:ok, _} =
           LearnElixirFinalProxy.deliver_user_confirmation_instructions(
             user,
-            url(~p"/users/confirm/")
+            url
           )
 
         changeset = LearnElixirFinalProxy.change_user_registration(user)
