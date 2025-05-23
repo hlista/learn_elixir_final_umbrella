@@ -34,12 +34,12 @@ defmodule LearnElixirFinalWeb.LearnElixirFinalProxy do
   end
 
   # Queue listening events
-  def queue_league_account_match_listening_event(puuid) do
+  def queue_league_account_match_listening_event(params) do
     ErpcProxy.call_on_random_node(
       @erpc_proxy,
       @module,
       :queue_league_account_match_listening_event,
-      [puuid]
+      [params]
     )
   end
 

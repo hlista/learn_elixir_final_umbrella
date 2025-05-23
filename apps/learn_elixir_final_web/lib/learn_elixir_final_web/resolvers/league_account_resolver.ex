@@ -14,8 +14,8 @@ defmodule LearnElixirFinalWeb.Resolvers.LeagueAccountResolver do
   end
 
   def remove_summoner(%{
-    puuid: puuid
+    league_account_id: league_account_id
   }, %{context: %{current_user: current_user}}) do
-    LearnElixirFinalProxy.remove_user_league_account(current_user.id, puuid)
+    LearnElixirFinalProxy.remove_user_league_account(current_user.id, league_account_id)
   end
 end

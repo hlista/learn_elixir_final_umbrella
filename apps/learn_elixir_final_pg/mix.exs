@@ -37,15 +37,13 @@ defmodule LearnElixirFinalPg.MixProject do
   defp deps do
     [
       {:bcrypt_elixir, "~> 3.0"},
-      {:dns_cluster, "~> 0.1.1"},
-      {:phoenix_pubsub, "~> 2.1"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
       {:jason, "~> 1.2"},
       {:swoosh, "~> 1.5"},
-      {:finch, "~> 0.13"},
       {:ecto_shorts, "~> 2.3"},
       {:oban, "~> 2.19"},
+      {:ex_machina, "~> 2.8.0", only: :test},
     ]
   end
 

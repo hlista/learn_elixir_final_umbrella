@@ -13,7 +13,7 @@ defmodule LearnElixirFinal do
   defdelegate remove_user_league_account(user_id, puuid), to: LeagueAccount
 
   # Queue Events
-  defdelegate queue_league_account_match_listening_event(puuid), to: LeagueEventWorker
+  defdelegate queue_league_account_match_listening_event(params), to: LeagueEventWorker
   defdelegate queue_user_match_listening_event(user_id), to: LeagueEventWorker
 
   ### Deliver Emails

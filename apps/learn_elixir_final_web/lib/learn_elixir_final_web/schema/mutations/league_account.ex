@@ -16,7 +16,7 @@ defmodule LearnElixirFinalWeb.Schema.Mutations.LeagueAccount do
     end
 
     field :remove_summoner, :league_account do
-      arg :puuid, non_null(:string)
+      arg :league_account_id, non_null(:id)
       middleware LearnElixirFinalWeb.Middleware.Auth
       resolve &LeagueAccountResolver.remove_summoner/2
     end
