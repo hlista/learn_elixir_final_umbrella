@@ -9,6 +9,7 @@ defmodule RiotClient.HttpQueue.HttpQueueWorker do
     "asia" => :asia_backoff_limiter,
     "sea" => :sea_backoff_limiter
   }
+  defp client, do: Application.get_env(:riot_client, :http_client)
 
   def run(%{region: region} = req, from_pid) do
     case backoff_limiter_name(region) do
@@ -38,11 +39,10 @@ defmodule RiotClient.HttpQueue.HttpQueueWorker do
     headers: headers,
     body: body,
     opts: opts,
-    client: client,
     retries: retries,
     backoff_limiter_name: backoff_limiter_name
   } = req, from_pid) do
-    case client.request(method, url, headers, body, opts) do
+    case client().request(method, url, headers, body, opts) do
       {:ok, %{status: 429, headers: headers}} ->
         recieved_429(req, headers, from_pid)
       {:ok, response} ->
@@ -69,7 +69,6 @@ defmodule RiotClient.HttpQueue.HttpQueueWorker do
     backoff_limiter_name: backoff_limiter_name,
     retries: retries
   } = req, headers, from_pid) do
-    IO.inspect "received 429 #{backoff_limiter_name}"
     retry_after = get_retry_after(headers)
     BackoffLimiter.notify_429(backoff_limiter_name, retry_after)
     if retries < @max_retries do

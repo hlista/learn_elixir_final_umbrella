@@ -19,7 +19,6 @@ defmodule RiotClient.HttpQueueTest do
       headers: [],
       body: "",
       opts: [],
-      client: HttpClientMock,
       region: "sea"
     }
 
@@ -43,7 +42,6 @@ defmodule RiotClient.HttpQueueTest do
       headers: [],
       body: "",
       opts: [],
-      client: HttpClientMock,
       region: "europe"
     }
 
@@ -76,7 +74,6 @@ defmodule RiotClient.HttpQueueTest do
       headers: [],
       body: "",
       opts: [],
-      client: HttpClientMock,
       region: "americas"
     }
 

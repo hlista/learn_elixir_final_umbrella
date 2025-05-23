@@ -31,9 +31,12 @@ defmodule LearnElixirFinal.LeagueEventWorker do
           "user_id" => user_id
         }
       }) do
-    with {:ok, league_accounts} <- UserMatchListeningEvent.find_user_league_accounts(user_id) do
-      bulk_queue_league_account_match_listening_event(league_accounts)
-      :ok
+    case UserMatchListeningEvent.find_user_league_accounts(user_id) do
+      {:ok, league_accounts} ->
+        bulk_queue_league_account_match_listening_event(league_accounts)
+      {:error, %ErrorMessage{code: :not_found}} ->
+        {:ok, "User does not exist"}
+      e -> e
     end
   end
 
@@ -41,30 +44,26 @@ defmodule LearnElixirFinal.LeagueEventWorker do
   def perform(%Oban.Job{
         args: %{
           "event" => @league_account_match_listening_event,
-          "params" => %{"puuid" => puuid}
+          "params" => params
         }
       }) do
-    with {:ok, league_account} <- LeagueAccount.find_or_create_league_account(%{puuid: puuid}),
-         {:ok, match_ids} <-
-           LeagueAccountMatchListeningEvent.find_league_account_matches(league_account) do
-      bulk_queue_league_match_found_event(match_ids, league_account.match_region)
-      :ok
-    end
-  end
-
-  @impl Oban.Worker
-  def perform(%Oban.Job{
-        args: %{
-          "event" => @league_account_match_listening_event,
-          "params" => %{"league_account_id" => league_account_id}
-        }
-      }) do
-    with {:ok, league_account} <-
-           LeagueAccount.find_or_create_league_account(%{id: league_account_id}),
-         {:ok, match_ids} <-
-           LeagueAccountMatchListeningEvent.find_league_account_matches(league_account) do
-      bulk_queue_league_match_found_event(match_ids, league_account.match_region)
-      :ok
+    params = %{
+      id: params["league_account_id"],
+      puuid: params["puuid"]
+    }
+    params = Map.filter(params, & elem(&1, 1))
+    case LeagueAccountMatchListeningEvent.find_league_account_matches(params) do
+      {:ok, %{
+        match_ids: match_ids,
+        league_account: league_account
+      }} ->
+        bulk_queue_league_match_found_event(match_ids, league_account.match_region)
+      {:error, "Invalid player"} -> {:ok, "Player does not exist"}
+      {:error, "Invalid region"} -> {:ok, "Region does not exist"}
+      {:error, "Invalid Api Key"} -> {:ok, "Api Key expired"}
+      {:error, "Invalid account params"} -> {:ok, "Invalid account params"}
+      {:error, %{code: :not_found}} -> {:ok, "Player does not exist"}
+      e -> e
     end
   end
 
@@ -250,6 +249,13 @@ defmodule LearnElixirFinal.LeagueEventWorker do
       Oban.insert(job)
     end)
   end
+
+  def user_match_listening_event, do: @user_match_listening_event
+  def league_account_match_listening_event, do: @league_account_match_listening_event
+  def league_match_found_event, do: @league_match_found_event
+  def league_match_participant_found_event, do: @league_match_participant_found_event
+  def aggregate_user_matches_event, do: @aggregate_user_matches_event
+  def aggregate_league_account_matches_event, do: @aggregate_league_account_matches_event
 
   defp get_region_queue(region) do
     case region do

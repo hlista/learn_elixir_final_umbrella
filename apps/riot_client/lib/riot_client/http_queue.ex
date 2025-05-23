@@ -7,7 +7,7 @@ defmodule RiotClient.HttpQueue do
 
   def start_link(_), do: GenServer.start_link(__MODULE__, %{queue: :queue.new(), active: 0}, name: __MODULE__)
 
-  def enqueue_request(%{method: _, url: _, headers: _, body: _, opts: _, client: _} = req) do
+  def enqueue_request(%{method: _, url: _, headers: _, body: _, opts: _} = req) do
     req = Map.put(req, :retries, 0)
     GenServer.cast(__MODULE__, {:enqueue, req, self()})
     receive do

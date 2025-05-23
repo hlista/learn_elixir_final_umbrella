@@ -13,7 +13,18 @@ defmodule LearnElixirFinalPg.Factory do
   def user_factory do
     %User{
       email: sequence(:email, &"email-#{&1}@example.com"),
-      password: sequence(:password, &"passwordnumber#{&1}"),
+      hashed_password: sequence("password")
+    }
+  end
+
+  def league_account_factory do
+    %LeagueAccount{
+      puuid: sequence("puuid"),
+      tag_line: sequence("tagline"),
+      game_name: sequence("gamename"),
+      region: sequence(:region, ["na", "br", "lan", "las", "kr", "jp", "eune", "euw", "me", "tr", "ru", "oce", "sg", "tw", "vn"]),
+      match_region: sequence(:match_region, ["americas", "asia", "sea", "europe"]),
+      match_offset: 0
     }
   end
 
