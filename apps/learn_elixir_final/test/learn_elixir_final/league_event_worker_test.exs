@@ -193,7 +193,7 @@ defmodule LearnElixirFinal.LeagueEventWorkerTest do
         }, queue: :league_events
       )
       jobs = all_enqueued(worker: LeagueEventWorker)
-      assert 0 == Enum.empty?(jobs)
+      assert true == Enum.empty?(jobs)
     end
 
     test "user does not exist" do
@@ -371,6 +371,22 @@ defmodule LearnElixirFinal.LeagueEventWorkerTest do
           event: LeagueEventWorker.league_match_participant_found_event()
         }, queue: :league_events
       )
+      assert_enqueued(worker: LeagueEventWorker, args: %{league_account_id: league_account.id, event: LeagueEventWorker.aggregate_league_account_matches_event()})
+    end
+
+    test "create league account if doesnt exist" do
+      league_match = insert(:league_match)
+      match_participant = params_for(:match_participant, league_match_id: league_match.id)
+      assert :ok = perform_job(
+        LeagueEventWorker,
+        %{
+          participant: match_participant,
+          region: league_match.region,
+          event: LeagueEventWorker.league_match_participant_found_event()
+        }, queue: :league_events
+      )
+      jobs = all_enqueued(worker: LeagueEventWorker)
+      assert 1 == length(jobs)
     end
   end
 

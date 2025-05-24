@@ -13,9 +13,10 @@ defmodule LearnElixirFinal.LeagueEventWorker do
   }
 
   alias LearnElixirFinal.{
-    LeagueAccount,
     LearnElixirFinalWebProxy
   }
+
+  alias LearnElixirFinalPg.League
 
   @user_match_listening_event "user_match_listening_event"
   @league_account_match_listening_event "league_account_match_listening_event"
@@ -94,7 +95,7 @@ defmodule LearnElixirFinal.LeagueEventWorker do
         }
       }) do
     with {:ok, _} <-
-           LeagueAccount.find_or_create_league_account(%{
+           League.find_or_create_league_account(%{
              puuid: league_match_participant_info["puuid"]
            }),
          {:ok,

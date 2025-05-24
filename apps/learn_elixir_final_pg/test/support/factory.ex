@@ -2,12 +2,12 @@ defmodule LearnElixirFinalPg.Factory do
   use ExMachina.Ecto, repo: LearnElixirFinalPg.Repo
   alias LearnElixirFinalPg.Accounts.User
   alias LearnElixirFinalPg.League.{
-    LeagueAccountMatchAggregate,
+    #LeagueAccountMatchAggregate,
     LeagueAccount,
     LeagueMatch,
     MatchParticipant,
-    UserLeagueAccount,
-    UserMatchAggregate
+    #UserLeagueAccount,
+    #UserMatchAggregate
   }
 
   def user_factory do
