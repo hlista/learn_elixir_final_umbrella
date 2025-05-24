@@ -1,8 +1,8 @@
 defmodule LearnElixirFinalWeb.Subscription.Janitor do
   use GenServer
   alias LearnElixirFinalWeb.Subscription.{
-    Tracker,
-    Presence
+    Presence,
+    Tracker
   }
   @interval :timer.seconds(30)
 

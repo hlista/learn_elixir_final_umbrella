@@ -71,11 +71,11 @@ defmodule LearnElixirFinal.LeagueEventWorker do
   def perform(%Oban.Job{
         args: %{
           "event" => @league_match_found_event,
-          "league_match_id" => league_match_id,
+          "match_id" => match_id,
           "region" => region
         }
       }) do
-    case LeagueMatchFoundEvent.maybe_create_league_match(league_match_id, region) do
+    case LeagueMatchFoundEvent.maybe_create_league_match(match_id, region) do
       {:ok, %{match_participants_info: match_participants_info}} ->
         bulk_queue_league_match_participant_found_event(match_participants_info, region)
       {:error, "Invalid Api Key"} ->
@@ -194,7 +194,7 @@ defmodule LearnElixirFinal.LeagueEventWorker do
     Enum.each(match_ids, fn match_id ->
       job = Oban.Job.new(
         %{
-          league_match_id: match_id,
+          match_id: match_id,
           region: region,
           event: @league_match_found_event
         },

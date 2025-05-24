@@ -1,4 +1,7 @@
 defmodule LearnElixirFinalWeb.Resolvers.UserResolver do
+  @moduledoc """
+  Resolver functions for a user
+  """
   alias LearnElixirFinalWeb.LearnElixirFinalProxy
   def login(%{email: email, password: password}, _) do
     user = LearnElixirFinalProxy.get_user_by_email_and_password(email, password)

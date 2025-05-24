@@ -23,7 +23,7 @@ defmodule LearnElixirFinalWeb.Application do
         [name: LearnElixirFinalWeb.ClusterSupervisor]]
       },
       LearnElixirFinalWeb.Telemetry,
-      {DNSCluster, query: Application.get_env(:learn_elixir_final, :dns_cluster_query) || :ignore},
+      # {DNSCluster, query: Application.get_env(:learn_elixir_final, :dns_cluster_query) || :ignore},
       # Start a worker by calling: LearnElixirFinalWeb.Worker.start_link(arg)
       # {LearnElixirFinalWeb.Worker, arg},
       # Start to serve requests, typically the last entry
@@ -45,7 +45,7 @@ defmodule LearnElixirFinalWeb.Application do
         [name: LearnElixirFinalWeb.ClusterSupervisor]]
       },
       LearnElixirFinalWeb.Telemetry,
-      {DNSCluster, query: Application.get_env(:learn_elixir_final, :dns_cluster_query) || :ignore},
+      # {DNSCluster, query: Application.get_env(:learn_elixir_final, :dns_cluster_query) || :ignore},
       # Start a worker by calling: LearnElixirFinalWeb.Worker.start_link(arg)
       # {LearnElixirFinalWeb.Worker, arg},
       # Start to serve requests, typically the last entry
@@ -62,7 +62,7 @@ defmodule LearnElixirFinalWeb.Application do
   defp children_for_env(:test) do
     [
       LearnElixirFinalWeb.Telemetry,
-      {DNSCluster, query: Application.get_env(:learn_elixir_final, :dns_cluster_query) || :ignore},
+      # {DNSCluster, query: Application.get_env(:learn_elixir_final, :dns_cluster_query) || :ignore},
       # Start a worker by calling: LearnElixirFinalWeb.Worker.start_link(arg)
       # {LearnElixirFinalWeb.Worker, arg},
       # Start to serve requests, typically the last entry

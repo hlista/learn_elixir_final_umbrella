@@ -1,4 +1,7 @@
 defmodule LearnElixirFinalWeb.Resolvers.LeagueAccountResolver do
+  @moduledoc """
+  Resolver functions for a league account
+  """
   alias LearnElixirFinalWeb.LearnElixirFinalProxy
   def add_summoner_by_game_name_tag_line(%{
     tag_line: tag_line,

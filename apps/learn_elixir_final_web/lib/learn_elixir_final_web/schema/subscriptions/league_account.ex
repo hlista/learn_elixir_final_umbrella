@@ -6,8 +6,7 @@ defmodule LearnElixirFinalWeb.Schema.Subscriptions.LeagueAccount do
       arg :puuid, :string
       arg :league_account_id, :id
       middleware LearnElixirFinalWeb.Middleware.Auth
-      config
-        fn %{puuid: puuid}, %{context: %{current_user: user}} ->
+      config fn %{puuid: puuid}, %{context: %{current_user: user}} ->
           topic = "league_account_match_added:puuid:#{puuid}"
           LearnElixirFinalWeb.Subscription.Tracker.track(topic)
           LearnElixirFinalWeb.Subscription.Presence.track(

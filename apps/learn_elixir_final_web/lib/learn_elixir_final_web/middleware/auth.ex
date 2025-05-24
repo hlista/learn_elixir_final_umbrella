@@ -1,4 +1,8 @@
 defmodule LearnElixirFinalWeb.Middleware.Auth do
+  @moduledoc """
+  Absinthe middleware to ensure a user is logged in before
+  reaching a resolver
+  """
   @behaviour Absinthe.Middleware
 
   @impl Absinthe.Middleware

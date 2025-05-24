@@ -16,7 +16,7 @@ defmodule LearnElixirFinal.LeagueEventWorker.UniquenessConstraints do
   @league_match_found_event_uniqueness [
     period: {2, :minutes},
     timestamp: :scheduled_at,
-    keys: [:league_match_id, :event],
+    keys: [:match_id, :event],
     fields: [:worker, :args]
   ]
 

@@ -67,7 +67,8 @@ defmodule LearnElixirFinalWeb.MixProject do
       {:phoenix_pubsub, "~> 2.0"},
       {:libcluster, "~> 3.3"},
       {:dataloader, "~> 2.0.0"},
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
+      {:credo, "~> 1.4", only: [:test, :dev], runtime: false}
     ]
   end
 

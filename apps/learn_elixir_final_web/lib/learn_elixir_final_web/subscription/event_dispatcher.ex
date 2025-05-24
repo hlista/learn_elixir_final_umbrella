@@ -1,7 +1,7 @@
 defmodule LearnElixirFinalWeb.Subscription.EventDispatcher do
   use GenServer
-  alias LearnElixirFinalWeb.Subscription.Tracker
   alias LearnElixirFinalWeb.LearnElixirFinalProxy
+  alias LearnElixirFinalWeb.Subscription.Tracker
   @interval :timer.seconds(30)
 
   def start_link(_), do: GenServer.start_link(__MODULE__, %{}, name: __MODULE__)

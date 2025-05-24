@@ -62,4 +62,15 @@ defmodule LearnElixirFinalPg.Factory do
       game_end_timestamp: DateTime.utc_now(),
     }
   end
+
+  def league_match_factory do
+    %LeagueMatch{
+      match_id: sequence("match_"),
+      region: sequence(:match_region, ["americas", "asia", "sea", "europe"]),
+      game_duration: 1000,
+      game_end_timestamp: DateTime.utc_now(),
+      game_id: 1000,
+      game_name: sequence("game_")
+    }
+  end
 end

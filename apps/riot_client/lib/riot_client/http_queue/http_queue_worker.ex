@@ -39,8 +39,8 @@ defmodule RiotClient.HttpQueue.HttpQueueWorker do
     headers: headers,
     body: body,
     opts: opts,
-    retries: retries,
-    backoff_limiter_name: backoff_limiter_name
+    retries: _retries,
+    backoff_limiter_name: _backoff_limiter_name
   } = req, from_pid) do
     case client().request(method, url, headers, body, opts) do
       {:ok, %{status: 429, headers: headers}} ->

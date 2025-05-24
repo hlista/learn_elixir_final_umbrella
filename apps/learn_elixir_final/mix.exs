@@ -48,6 +48,7 @@ defmodule LearnElixirFinal.MixProject do
       {:learn_elixir_final_pg, in_umbrella: true},
       {:libcluster, "~> 3.3"},
       {:erpc_proxy, in_umbrella: true},
+      {:inflex, "~> 2.0.0", only: :test}
     ]
   end
 

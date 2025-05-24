@@ -1,6 +1,5 @@
 defmodule RiotClient do
   alias RiotClient.HttpQueue
-  alias RiotClient.RealHttpClient
 
   defp riot_api_key, do: Application.get_env(:riot_client, :riot_api_key)
   def get_account_by_riot_id(game_name, tag_line, region \\ "americas") do

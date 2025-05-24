@@ -98,9 +98,9 @@ defmodule LearnElixirFinal.LeagueEventWorkerTest do
     test "queue event assert" do
       match_ids = ["match_1", "match_2", "match_3"]
       LeagueEventWorker.bulk_queue_league_match_found_event(match_ids, "americas")
-      assert_enqueued worker: LeagueEventWorker, args: %{league_match_id: "match_1", event: "league_match_found_event"}
-      assert_enqueued worker: LeagueEventWorker, args: %{league_match_id: "match_2", event: "league_match_found_event"}
-      assert_enqueued worker: LeagueEventWorker, args: %{league_match_id: "match_3", event: "league_match_found_event"}
+      assert_enqueued worker: LeagueEventWorker, args: %{match_id: "match_1", event: "league_match_found_event"}
+      assert_enqueued worker: LeagueEventWorker, args: %{match_id: "match_2", event: "league_match_found_event"}
+      assert_enqueued worker: LeagueEventWorker, args: %{match_id: "match_3", event: "league_match_found_event"}
     end
 
     test "queue uniqueness" do
@@ -271,7 +271,7 @@ defmodule LearnElixirFinal.LeagueEventWorkerTest do
           event: LeagueEventWorker.league_account_match_listening_event
         }, queue: :league_events
       )
-      Enum.each(match_ids, &assert_enqueued(worker: LeagueEventWorker, args: %{league_match_id: &1, event: "league_match_found_event", region: match_region}))
+      Enum.each(match_ids, &assert_enqueued(worker: LeagueEventWorker, args: %{match_id: &1, event: "league_match_found_event", region: match_region}))
     end
   end
 
@@ -284,7 +284,7 @@ defmodule LearnElixirFinal.LeagueEventWorkerTest do
       assert {:ok, _} = perform_job(
         LeagueEventWorker,
         %{
-          league_match_id: match_id,
+          match_id: match_id,
           region: region,
           event: LeagueEventWorker.league_match_found_event
         }, queue: :league_events_americas
@@ -299,16 +299,80 @@ defmodule LearnElixirFinal.LeagueEventWorkerTest do
       assert {:ok, _} = perform_job(
         LeagueEventWorker,
         %{
-          league_match_id: match_id,
+          match_id: match_id,
           region: region,
           event: LeagueEventWorker.league_match_found_event
         }, queue: :league_events_americas
       )
     end
 
-    # test "Success" do
+    test "match already made" do
+      league_match = insert(:league_match)
+      expected_payload = %{
+        "metadata" => %{
+          "matchId" => league_match.match_id,
+        }
+      }
+      url = "https://#{league_match.region}.api.riotgames.com/lol/match/v5/matches/#{league_match.match_id}?api_key=#{@riot_api_key}"
+      mock_get_match(HttpClientMock, url, expected_payload)
+      assert {:ok, "League Match Already Created"} = perform_job(
+        LeagueEventWorker,
+        %{
+          match_id: league_match.match_id,
+          region: league_match.region,
+          event: LeagueEventWorker.league_match_found_event
+        }, queue: :league_events_americas
+      )
+    end
 
-    # end
+    test "Success" do
+      match_participant = params_for(:match_participant)
+      |> Map.update!(:game_end_timestamp, &(DateTime.to_unix(&1, :millisecond)))
+      |> camel_cased_map_keys()
+      league_match = params_for(:league_match)
+      |> Map.put(:participants, [match_participant])
+      |> Map.update!(:game_end_timestamp, &(DateTime.to_unix(&1, :millisecond)))
+      |> camel_cased_map_keys()
+
+      match_id = league_match["matchId"]
+      participants = [match_participant["puuid"]]
+      region = league_match["region"]
+      expected_payload = %{
+        "metadata" => %{
+          "matchId" => match_id,
+          "participants" => participants
+        },
+        "info" => league_match
+      }
+      url = "https://#{region}.api.riotgames.com/lol/match/v5/matches/#{match_id}?api_key=#{@riot_api_key}"
+      mock_get_match(HttpClientMock, url, expected_payload)
+      :ok = perform_job(
+        LeagueEventWorker,
+        %{
+          match_id: match_id,
+          region: region,
+          event: LeagueEventWorker.league_match_found_event
+        }, queue: :league_events_americas
+      )
+      jobs = all_enqueued(worker: LeagueEventWorker)
+      assert 1 == length(jobs)
+    end
+  end
+
+  describe "perform league_match_participant_found_event" do
+    test "Success" do
+      league_match = insert(:league_match)
+      match_participant = params_for(:match_participant, league_match_id: league_match.id)
+      league_account = insert(:league_account, puuid: match_participant.puuid)
+      :ok = perform_job(
+        LeagueEventWorker,
+        %{
+          participant: match_participant,
+          region: league_match.region,
+          event: LeagueEventWorker.league_match_participant_found_event()
+        }, queue: :league_events
+      )
+    end
   end
 
   def mock_invalid_api_key(mock_module, url) do
@@ -361,38 +425,22 @@ defmodule LearnElixirFinal.LeagueEventWorkerTest do
         end
       )
   end
+
+  def mock_get_match(mock_module, url, payload) do
+    body = Jason.encode!(payload)
+    expect(
+      mock_module, :request,
+        fn :get, ^url, _headers, _body, _opts ->
+          {:ok, %Finch.Response{status: 200, body: body}}
+        end
+    )
+  end
+
+  defp camel_cased_map_keys(map) when is_map(map) do
+    for {key, val} <- map, into: %{} do
+      {Inflex.camelize(key, :lower), camel_cased_map_keys(val)}
+    end
+  end
+
+  defp camel_cased_map_keys(val), do: val
 end
-
-
-
-# def handle_error_code(%{
-#   "status" => %{
-#     "message" => "Unknown apikey",
-#     "status_code" => 401
-# }}) do
-#   {:error, "Invalid Api Key"}
-# end
-
-# def handle_error_code(%{
-#   "status" => %{
-#     "message" => "Bad Request - Exception decrypting" <> _,
-#     "status_code" => 400
-# }}) do
-#   {:error, "Invalid player"}
-# end
-
-# def handle_error_code(%{
-#   "status" => %{
-#     "message" => "Data not found - No results found for player" <> _,
-#     "status_code" => 404
-#   }
-# }) do
-#   {:error, "Invalid player"}
-# end
-
-# def handle_error_code(%{
-#   "errorCode" => "RESOURCE_NOT_FOUND",
-#   "httpStatus" => 404,
-# }) do
-#   {:error, "resource not found"}
-# end

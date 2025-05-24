@@ -1,4 +1,8 @@
 defmodule LearnElixirFinalWeb.Plugs.GraphqlAuthPlug do
+  @moduledoc """
+  GraphQL plug to grab a users session token from the headder
+  and insert the current user and session token into the context
+  """
   import Plug.Conn
   alias LearnElixirFinalWeb.LearnElixirFinalProxy
 

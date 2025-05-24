@@ -1,10 +1,9 @@
 defmodule LearnElixirFinalWeb.UserAuthTest do
   use LearnElixirFinalWeb.ConnCase, async: true
-
-  alias Phoenix.LiveView
+  import LearnElixirFinalPg.AccountsFixtures
   alias LearnElixirFinalPg.Accounts
   alias LearnElixirFinalWeb.UserAuth
-  import LearnElixirFinalPg.AccountsFixtures
+  alias Phoenix.LiveView
 
   @remember_me_cookie "_learn_elixir_final_web_user_remember_me"
 

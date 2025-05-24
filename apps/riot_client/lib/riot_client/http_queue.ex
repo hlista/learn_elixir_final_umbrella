@@ -24,7 +24,7 @@ defmodule RiotClient.HttpQueue do
     {:noreply, %{state | active: n + 1}}
   end
 
-  def handle_cast({:enqueue, req, from_pid}, %{queue: q, active: n} = state) do
+  def handle_cast({:enqueue, req, from_pid}, %{queue: q, active: _n} = state) do
     if :queue.len(q) >= @queue_limit do
       send(from_pid, {:http_response, {:error, :queue_full}})
       {:noreply, state}

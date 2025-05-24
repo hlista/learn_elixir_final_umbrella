@@ -1,4 +1,7 @@
 defmodule LearnElixirFinalWeb.GraphqlRouter do
+  @moduledoc """
+  Graphql Endpoints router
+  """
   use LearnElixirFinalWeb, :router
 
   forward "/graphql", Absinthe.Plug,

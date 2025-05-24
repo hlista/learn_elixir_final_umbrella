@@ -1,4 +1,5 @@
 defmodule LearnElixirFinalWeb.Schema.Queries.User do
+  @moduledoc false
   use Absinthe.Schema.Notation
   alias LearnElixirFinalWeb.Resolvers.UserResolver
   object :user_queries do
