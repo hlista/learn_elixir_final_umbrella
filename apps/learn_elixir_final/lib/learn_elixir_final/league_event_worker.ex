@@ -75,12 +75,14 @@ defmodule LearnElixirFinal.LeagueEventWorker do
           "region" => region
         }
       }) do
-    with {:ok,
-          %{
-            match_participants_info: match_participants_info
-          }} <- LeagueMatchFoundEvent.maybe_create_league_match(league_match_id, region) do
-      bulk_queue_league_match_participant_found_event(match_participants_info, region)
-      :ok
+    case LeagueMatchFoundEvent.maybe_create_league_match(league_match_id, region) do
+      {:ok, %{match_participants_info: match_participants_info}} ->
+        bulk_queue_league_match_participant_found_event(match_participants_info, region)
+      {:error, "Invalid Api Key"} ->
+        {:ok, "Api Key expired"}
+      {:error, "resource not found"} ->
+        {:ok, "Match does not exist"}
+      e -> e
     end
   end
 

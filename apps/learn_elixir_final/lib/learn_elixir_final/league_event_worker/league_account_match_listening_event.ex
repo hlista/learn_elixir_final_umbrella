@@ -19,7 +19,7 @@ defmodule LearnElixirFinal.LeagueEventWorker.LeagueAccountMatchListeningEvent do
     "vn" => "sea"
   }
 
-  def find_or_create_league_account(%{id: id} = params) do
+  def find_or_create_league_account(%{id: _} = params) do
     with {:ok, league_account} <- League.find_league_account(params) do
       riot_update_league_account(league_account)
     end
@@ -85,7 +85,7 @@ defmodule LearnElixirFinal.LeagueEventWorker.LeagueAccountMatchListeningEvent do
 
   def find_league_account_matches(league_account_params) when map_size(league_account_params) != 0 do
     with {:ok, league_account} <- find_or_create_league_account(league_account_params),
-         {:ok, match_ids} <- RiotClient.get_account_match_ids(league_account.match_region, league_account.puuid, league_account.match_offset, 5),
+         {:ok, match_ids} <- RiotClient.get_account_match_ids(league_account.puuid, league_account.match_offset, 5, league_account.match_region),
          {:ok, _} <- League.update_league_account(league_account, %{match_offset: league_account.match_offset + length(match_ids)}) do
            {:ok, %{
             match_ids: match_ids,

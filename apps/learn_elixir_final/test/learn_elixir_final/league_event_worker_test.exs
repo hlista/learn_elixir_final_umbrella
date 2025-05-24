@@ -8,7 +8,7 @@ defmodule LearnElixirFinal.LeagueEventWorkerTest do
 
   alias LearnElixirFinal.LeagueEventWorker
 
-  @riot_api_key Application.get_env(:riot_client, :riot_api_key)
+  @riot_api_key Application.compile_env(:riot_client, :riot_api_key)
 
   describe "@queue_user_match_listening_event/1" do
     test "queue event assert" do
@@ -215,6 +215,7 @@ defmodule LearnElixirFinal.LeagueEventWorkerTest do
         league_account: league_account
       }
     end
+
     test "Api key expired" do
       url = "https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/foobar?api_key=#{@riot_api_key}"
       mock_invalid_api_key(HttpClientMock, url)
@@ -258,26 +259,55 @@ defmodule LearnElixirFinal.LeagueEventWorkerTest do
         }, queue: :league_events
       )
     end
-    # test "user with no league accounts", %{user_without_league_accounts: user} do
-    #   perform_job(
-    #     LeagueEventWorker,
-    #     %{
-    #       user_id: user.id,
-    #       event: LeagueEventWorker.user_match_listening_event
-    #     }, queue: :league_events
-    #   )
-    #   jobs = all_enqueued(worker: LeagueEventWorker)
-    #   assert 0 == length(jobs)
-    # end
 
-    # test "user does not exist" do
-    #   assert {:ok, "User does not exist"} = perform_job(
-    #     LeagueEventWorker,
-    #     %{
-    #       user_id: 0,
-    #       event: LeagueEventWorker.user_match_listening_event
-    #     }, queue: :league_events
-    #   )
+    test "Success", %{league_account: %{puuid: puuid, match_region: match_region}} do
+      match_ids = ["match_1", "match_2", "match_3"]
+      url = "https://#{match_region}.api.riotgames.com/lol/match/v5/matches/by-puuid/#{puuid}/ids?start=0&count=5&api_key=#{@riot_api_key}"
+      mock_get_match_ids(HttpClientMock, url, match_ids)
+      assert :ok = perform_job(
+        LeagueEventWorker,
+        %{
+          params: %{puuid: puuid},
+          event: LeagueEventWorker.league_account_match_listening_event
+        }, queue: :league_events
+      )
+      Enum.each(match_ids, &assert_enqueued(worker: LeagueEventWorker, args: %{league_match_id: &1, event: "league_match_found_event", region: match_region}))
+    end
+  end
+
+  describe "perform league_match_found_event" do
+    test "Api key expired" do
+      match_id = "match_1"
+      region = "americas"
+      url = "https://#{region}.api.riotgames.com/lol/match/v5/matches/#{match_id}?api_key=#{@riot_api_key}"
+      mock_invalid_api_key(HttpClientMock, url)
+      assert {:ok, _} = perform_job(
+        LeagueEventWorker,
+        %{
+          league_match_id: match_id,
+          region: region,
+          event: LeagueEventWorker.league_match_found_event
+        }, queue: :league_events_americas
+      )
+    end
+
+    test "resource not found" do
+      match_id = "match_1"
+      region = "americas"
+      url = "https://#{region}.api.riotgames.com/lol/match/v5/matches/#{match_id}?api_key=#{@riot_api_key}"
+      mock_resource_not_found(HttpClientMock, url)
+      assert {:ok, _} = perform_job(
+        LeagueEventWorker,
+        %{
+          league_match_id: match_id,
+          region: region,
+          event: LeagueEventWorker.league_match_found_event
+        }, queue: :league_events_americas
+      )
+    end
+
+    # test "Success" do
+
     # end
   end
 
@@ -318,6 +348,16 @@ defmodule LearnElixirFinal.LeagueEventWorkerTest do
       mock_module, :request,
         fn :get, ^url, _headers, _body, _opts ->
           {:ok, %Finch.Response{status: 404, body: body}}
+        end
+      )
+  end
+
+  def mock_get_match_ids(mock_module, url, match_ids) do
+    body = Jason.encode!(match_ids)
+    expect(
+      mock_module, :request,
+        fn :get, ^url, _headers, _body, _opts ->
+          {:ok, %Finch.Response{status: 200, body: body}}
         end
       )
   end

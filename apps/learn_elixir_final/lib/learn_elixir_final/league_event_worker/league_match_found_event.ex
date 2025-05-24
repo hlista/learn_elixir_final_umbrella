@@ -11,7 +11,7 @@ defmodule LearnElixirFinal.LeagueEventWorker.LeagueMatchFoundEvent do
   end
 
   def create_league_match(match_id, region) do
-    with {:ok, match_payload} <- RiotClient.get_match(region, match_id),
+    with {:ok, match_payload} <- RiotClient.get_match(match_id, region),
          {:ok, league_match} <- League.create_league_match(match_create_fields(match_id, region, match_payload)),
          {:ok, match_participants_info} <- get_match_participants_info(league_match, match_payload["info"]["participants"]) do
       {:ok, %{
