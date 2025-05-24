@@ -5,11 +5,11 @@ defmodule LearnElixirFinal.LeagueEventWorker do
   alias LearnElixirFinal.LeagueEventWorker.{
     AggregateLeagueAccountMatchesEvent,
     AggregateUserMatchesEvent,
-    UserMatchListeningEvent,
     LeagueAccountMatchListeningEvent,
     LeagueMatchFoundEvent,
     LeagueMatchParticipantFoundEvent,
-    UniquenessConstraints
+    UniquenessConstraints,
+    UserMatchListeningEvent,
   }
 
   alias LearnElixirFinal.{
@@ -223,7 +223,7 @@ defmodule LearnElixirFinal.LeagueEventWorker do
   end
 
   def bulk_queue_aggregate_user_matches_event(users) do
-    Enum.each(users,fn user ->
+    Enum.each(users, fn user ->
       job = Oban.Job.new(
         %{
           user_id: user.id,

@@ -193,7 +193,7 @@ defmodule LearnElixirFinal.LeagueEventWorkerTest do
         }, queue: :league_events
       )
       jobs = all_enqueued(worker: LeagueEventWorker)
-      assert 0 == length(jobs)
+      assert 0 == Enum.empty?(jobs)
     end
 
     test "user does not exist" do
@@ -206,7 +206,6 @@ defmodule LearnElixirFinal.LeagueEventWorkerTest do
       )
     end
   end
-
 
   describe "perform league account match listening event" do
     setup do

@@ -15,7 +15,6 @@ defmodule LearnElixirFinalWeb.Endpoint do
     websocket: [connect_info: [session: @session_options]],
     longpoll: [connect_info: [session: @session_options]]
 
-
   socket "/socket", LearnElixirFinalWeb.UserSocket,
     websocket: [connect_info: [:x_headers]],
     longpoll: false

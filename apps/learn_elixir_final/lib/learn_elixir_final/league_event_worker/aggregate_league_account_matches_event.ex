@@ -38,7 +38,8 @@ defmodule LearnElixirFinal.LeagueEventWorker.AggregateLeagueAccountMatchesEvent 
       avg_magic_damage_dealt_to_champions: calculate_average(match_participants, :magic_damage_dealt_to_champions),
       avg_magic_damage_taken: calculate_average(match_participants, :magic_damage_taken),
       avg_physical_damage_dealt: calculate_average(match_participants, :physical_damage_dealt),
-      avg_physical_damage_dealt_to_champions: calculate_average(match_participants, :physical_damage_dealt_to_champions),
+      avg_physical_damage_dealt_to_champions:
+        calculate_average(match_participants, :physical_damage_dealt_to_champions),
       avg_physical_damage_taken: calculate_average(match_participants, :physical_damage_taken),
       avg_total_damage_dealt: calculate_average(match_participants, :total_damage_dealt),
       avg_total_damage_dealt_to_champions: calculate_average(match_participants, :total_damage_dealt_to_champions),

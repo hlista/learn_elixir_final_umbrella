@@ -44,6 +44,7 @@ defmodule LearnElixirFinalPg.MixProject do
       {:ecto_shorts, "~> 2.3"},
       {:oban, "~> 2.19"},
       {:ex_machina, "~> 2.8.0", only: :test},
+      {:credo, "~> 1.4", only: [:test, :dev], runtime: false}
     ]
   end
 

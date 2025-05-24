@@ -1,15 +1,20 @@
 defmodule LearnElixirFinalWeb.Schema.Subscriptions.LeagueAccount do
   use Absinthe.Schema.Notation
+  alias LearnElixirFinalWeb.Middleware.Auth
+  alias LearnElixirFinalWeb.Subscription.{
+    Presence,
+    Tracker
+  }
 
   object :league_account_subscriptions do
     field :league_account_match_added, :league_match do
       arg :puuid, :string
       arg :league_account_id, :id
-      middleware LearnElixirFinalWeb.Middleware.Auth
+      middleware Auth
       config fn %{puuid: puuid}, %{context: %{current_user: user}} ->
           topic = "league_account_match_added:puuid:#{puuid}"
-          LearnElixirFinalWeb.Subscription.Tracker.track(topic)
-          LearnElixirFinalWeb.Subscription.Presence.track(
+          Tracker.track(topic)
+          Presence.track(
             self(),
             topic,
             user.id,
@@ -19,8 +24,8 @@ defmodule LearnElixirFinalWeb.Schema.Subscriptions.LeagueAccount do
         end
         fn %{league_account_id: league_account_id}, %{context: %{current_user: user}} ->
           topic = "league_account_match_added:league_account_id:#{league_account_id}"
-          LearnElixirFinalWeb.Subscription.Tracker.track(topic)
-          LearnElixirFinalWeb.Subscription.Presence.track(
+          Tracker.track(topic)
+          Presence.track(
             self(),
             topic,
             user.id,

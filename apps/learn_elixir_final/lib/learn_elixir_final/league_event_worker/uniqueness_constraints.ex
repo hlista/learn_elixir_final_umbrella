@@ -41,10 +41,10 @@ defmodule LearnElixirFinal.LeagueEventWorker.UniquenessConstraints do
     fields: [:worker, :args]
   ]
 
-  def user_match_listening_event(), do: @user_match_listening_event_uniqueness
-  def league_account_match_listening_event(), do: @league_account_match_listening_event_uniqueness
-  def league_match_found_event(), do: @league_match_found_event_uniqueness
-  def league_match_participant_found_event(), do: @league_match_participant_found_event_uniqueness
-  def aggregate_user_matches_event(), do: @aggregate_user_matches_event_uniqueness
-  def aggregate_league_account_matches_event(), do: @aggregate_league_account_matches_event_uniqueness
+  def user_match_listening_event, do: @user_match_listening_event_uniqueness
+  def league_account_match_listening_event, do: @league_account_match_listening_event_uniqueness
+  def league_match_found_event, do: @league_match_found_event_uniqueness
+  def league_match_participant_found_event, do: @league_match_participant_found_event_uniqueness
+  def aggregate_user_matches_event, do: @aggregate_user_matches_event_uniqueness
+  def aggregate_league_account_matches_event, do: @aggregate_league_account_matches_event_uniqueness
 end

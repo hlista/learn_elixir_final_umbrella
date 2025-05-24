@@ -160,11 +160,9 @@ if Code.ensure_loaded?(Ecto) do
           |> normalize_key(source.default_params)
           |> get_keys(item)
 
-        with {:ok, batch} <- Map.fetch(source.results, batch_key) do
-          fetch_item_from_batch(batch, item_key)
-        else
-          :error ->
-            {:error, "Unable to find batch #{inspect(batch_key)}"}
+        case Map.fetch(source.results, batch_key) do
+          {:ok, batch} -> fetch_item_from_batch(batch, item_key)
+          _ -> {:error, "Unable to find batch #{inspect(batch_key)}"}
         end
       end
 
