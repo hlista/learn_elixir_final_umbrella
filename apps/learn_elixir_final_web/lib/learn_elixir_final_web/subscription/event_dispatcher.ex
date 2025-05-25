@@ -25,9 +25,9 @@ defmodule LearnElixirFinalWeb.Subscription.EventDispatcher do
     for topic <- Tracker.list_topics() do
       case topic do
         "league_account_match_added:puuid:" <> puuid ->
-          LearnElixirFinalProxy.queue_league_account_puuid_match_listening_event(%{puuid: puuid})
+          LearnElixirFinalProxy.queue_league_account_match_listening_event(%{puuid: puuid})
         "league_account_match_added:league_account_id:" <> league_account_id ->
-          LearnElixirFinalProxy.queue_league_account_id_match_listening_event(%{league_account_id: league_account_id})
+          LearnElixirFinalProxy.queue_league_account_match_listening_event(%{league_account_id: league_account_id})
         "user_match_added:" <> user_id ->
           LearnElixirFinalProxy.queue_user_match_listening_event(user_id)
         _ ->

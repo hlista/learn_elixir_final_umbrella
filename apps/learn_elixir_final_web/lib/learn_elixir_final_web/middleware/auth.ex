@@ -13,10 +13,8 @@ defmodule LearnElixirFinalWeb.Middleware.Auth do
     res
   end
 
-  def call(%Absinthe.Resolution{} = res, _opts) do
-    Absinthe.Resolution.put_result(
-      res,
-      {:error, ErrorMessage.unauthorized("please login to continue.")}
-    )
+  def call(resolution, _opts) do
+    resolution
+    |> Absinthe.Resolution.put_result({:error, "unauthenticated"})
   end
 end
