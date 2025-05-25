@@ -2,12 +2,12 @@ defmodule LearnElixirFinalPg.Factory do
   use ExMachina.Ecto, repo: LearnElixirFinalPg.Repo
   alias LearnElixirFinalPg.Accounts.User
   alias LearnElixirFinalPg.League.{
-    #LeagueAccountMatchAggregate,
+    LeagueAccountMatchAggregate,
     LeagueAccount,
     LeagueMatch,
     MatchParticipant,
     #UserLeagueAccount,
-    #UserMatchAggregate
+    UserMatchAggregate
   }
 
   def user_factory do
@@ -71,6 +71,70 @@ defmodule LearnElixirFinalPg.Factory do
       game_end_timestamp: DateTime.utc_now(),
       game_id: 1000,
       game_name: sequence("game_")
+    }
+  end
+
+  def user_match_aggregate_factory do
+    %UserMatchAggregate{
+      avg_assists: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_baron_kills: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_champ_experience: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_champ_level: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_damage_dealt_to_buildings: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_damage_dealt_to_objectives: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_damage_dealt_to_turrets: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_damage_self_mitigated: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_deaths: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_gold_earned: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_gold_spent: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_kills: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_largest_killing_spree: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_largest_multi_kill: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_magic_damage_dealt: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_magic_damage_dealt_to_champions: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_magic_damage_taken: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_physical_damage_dealt: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_physical_damage_dealt_to_champions: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_physical_damage_taken: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_total_damage_dealt: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_total_damage_dealt_to_champions: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_total_damage_taken: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_total_heal: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_total_minions_killed: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_total_time_spent_dead: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_win: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+    }
+  end
+
+  def league_account_match_aggregate_factory do
+    %LeagueAccountMatchAggregate{
+      avg_assists: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_baron_kills: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_champ_experience: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_champ_level: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_damage_dealt_to_buildings: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_damage_dealt_to_objectives: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_damage_dealt_to_turrets: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_damage_self_mitigated: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_deaths: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_gold_earned: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_gold_spent: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_kills: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_largest_killing_spree: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_largest_multi_kill: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_magic_damage_dealt: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_magic_damage_dealt_to_champions: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_magic_damage_taken: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_physical_damage_dealt: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_physical_damage_dealt_to_champions: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_physical_damage_taken: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_total_damage_dealt: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_total_damage_dealt_to_champions: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_total_damage_taken: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_total_heal: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_total_minions_killed: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_total_time_spent_dead: sequence(:league_stat, Enum.to_list(1..5)) / 10,
+      avg_win: sequence(:league_stat, Enum.to_list(1..5)) / 10,
     }
   end
 end

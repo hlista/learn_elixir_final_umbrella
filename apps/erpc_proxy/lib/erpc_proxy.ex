@@ -7,6 +7,7 @@ defmodule ErpcProxy do
   If in dev or prod makes an rpc call to a random node that houses the module
   The random node is determined by it's sname
   """
+  @behaviour ErpcClient
   defstruct [
     node_name: nil
   ]

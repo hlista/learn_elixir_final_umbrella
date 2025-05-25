@@ -448,6 +448,54 @@ defmodule LearnElixirFinal.LeagueEventWorkerTest do
     end
   end
 
+  describe "perform aggregate_user_matches_event" do
+    setup do
+      user = insert(:user, league_accounts: [build(:league_account, match_participants: [build(:match_participant)])])
+      %{
+        user: user
+      }
+    end
+    test "test", %{user: user} do
+      expect(
+        ErpcClientMock, :call_on_random_node,
+          fn _, Absinthe.Subscription, _, _ ->
+            :ok
+          end
+        )
+      assert :ok = perform_job(
+        LeagueEventWorker,
+        %{
+          user_id: user.id,
+          event: LeagueEventWorker.aggregate_user_matches_event()
+        }, queue: :league_events
+      )
+    end
+  end
+
+  describe "perform aggregate_league_account_matches_event" do
+    setup do
+      league_account = insert(:league_account, match_participants: [build(:match_participant)])
+      %{
+        league_account: league_account
+      }
+    end
+    test "test", %{league_account: league_account} do
+      expect(
+        ErpcClientMock, :call_on_random_node,
+          fn _, Absinthe.Subscription, _, _ ->
+            :ok
+          end
+        )
+      assert :ok = perform_job(
+        LeagueEventWorker,
+        %{
+          league_account_id: league_account.id,
+          event: LeagueEventWorker.aggregate_league_account_matches_event()
+        }, queue: :league_events
+      )
+    end
+  end
+
   def mock_invalid_api_key(mock_module, url) do
     body = Jason.encode!(%{
       "status" => %{

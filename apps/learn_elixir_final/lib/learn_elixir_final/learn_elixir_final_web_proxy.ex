@@ -3,8 +3,10 @@ defmodule LearnElixirFinal.LearnElixirFinalWebProxy do
     node_name: "learn_elixir_final_web@"
   }
 
+  defp client, do: Application.get_env(:learn_elixir_final, :erpc_client)
+
   def publish(event, trigger, topic) do
-    ErpcProxy.call_on_random_node(
+    client().call_on_random_node(
       @erpc_proxy,
       Absinthe.Subscription,
       :publish,

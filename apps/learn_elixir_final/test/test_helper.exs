@@ -1,3 +1,5 @@
 ExUnit.start()
 Mox.defmock(HttpClientMock, for: RiotClient.HttpClient)
+Mox.defmock(ErpcClientMock, for: ErpcClient)
 Application.put_env(:riot_client, :http_client, HttpClientMock)
+Application.put_env(:learn_elixir_final, :erpc_client, ErpcClientMock)

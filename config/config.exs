@@ -38,6 +38,8 @@ config :learn_elixir_final, Oban,
   ],
   plugins: [Oban.Plugins.Pruner]
 
+config :learn_elixir_final, :erpc_client, ErpcProxy
+
 config :riot_client, :riot_api_key, "RGAPI-7e3d4caf-685b-4042-9308-926223949ac7"
 config :riot_client, :http_client, RiotClient.RealHttpClient
 # Configures the mailer
