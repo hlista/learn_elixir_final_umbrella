@@ -59,9 +59,7 @@ defmodule LearnElixirFinal.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup"],
-      "ecto.setup": ["ecto.create", "ecto.migrate", "run #{__DIR__}/priv/repo/seeds.exs"],
-      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      setup: ["deps.get"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
     ]
   end

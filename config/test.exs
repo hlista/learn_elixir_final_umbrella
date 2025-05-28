@@ -5,6 +5,17 @@ config :libcluster,
 # Only in tests, remove the complexity from the password hashing algorithm
 config :bcrypt_elixir, :log_rounds, 1
 
+config :libcluster,
+  topologies: [
+    local: [
+      strategy: Cluster.Strategy.Epmd,
+      config: [hosts: [
+        :"learn_elixir_final@localhost",
+        :"learn_elixir_final_web@localhost"
+      ]],
+    ]
+  ]
+
 # Configure your database
 #
 # The MIX_TEST_PARTITION environment variable can be used

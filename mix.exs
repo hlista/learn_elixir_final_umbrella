@@ -7,7 +7,19 @@ defmodule LearnElixirFinal.Umbrella.MixProject do
       version: "0.1.0",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      aliases: aliases()
+      aliases: aliases(),
+      releases: [
+        learn_elixir_final_web: [
+          applications: [
+            learn_elixir_final_web: :permanent,
+          ]
+        ],
+        learn_elixir_final: [
+          applications: [
+            learn_elixir_final: :permanent,
+          ]
+        ]
+      ]
     ]
   end
 

@@ -1,7 +1,7 @@
 defmodule LearnElixirFinalPg.League.UserLeagueAccount do
   use Ecto.Schema
   import Ecto.Changeset
-  alias LearnElixirFinalPg.Auth.User
+  alias LearnElixirFinalPg.Accounts.User
   alias LearnElixirFinalPg.League.LeagueAccount
 
   @required_fields [

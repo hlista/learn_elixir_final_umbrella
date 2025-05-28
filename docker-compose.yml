@@ -1,21 +1,49 @@
 version: "3.9"
 services:
-  learn_elixir_final:
+  service:
     build:
       context: .
       dockerfile: apps/learn_elixir_final/Dockerfile
     environment:
-      NODE_NAME: "learn_elixir_final"
-      ELIXIR_COOKIE: "my_cluster_cookie"
-    container_name: service
+      RELEASE_COOKIE: "secret_cookie"
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/learn_elixir_final_pg_prod
+      SECRET_KEY_BASE: ixIrw6yknrGn9VqwuV6CGAoAukYM0f7fVxlP64Ghw5fvPfFOhoI9OuKzPo6ylv1H
+    hostname: service
+    depends_on:
+      - db
+    networks:
+      - elixirnet
 
-  learn_elixir_final_web:
+  web:
     build:
       context: .
       dockerfile: apps/learn_elixir_final_web/Dockerfile
     environment:
-      NODE_NAME: "learn_elixir_final_web"
-      ELIXIR_COOKIE: "my_cluster_cookie"
-    container_name: web
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/learn_elixir_final_pg_prod
+      RELEASE_COOKIE: "secret_cookie"
+      SECRET_KEY_BASE: ixIrw6yknrGn9VqwuV6CGAoAukYM0f7fVxlP64Ghw5fvPfFOhoI9OuKzPo6ylv1H
+    hostname: web
     ports:
       - "4000:4000"
+    networks:
+      - elixirnet
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - elixirnet
+
+volumes:
+  postgres-data:
+
+networks:
+  elixirnet:
+    driver: bridge

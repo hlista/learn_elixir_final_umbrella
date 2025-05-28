@@ -2,6 +2,7 @@ defmodule LearnElixirFinalWeb.Types.MatchAggregate do
   use Absinthe.Schema.Notation
 
   object :match_aggregate do
+    field :id, :id
     field :avg_assists, :float
     field :avg_baron_kills, :float
     field :avg_champ_experience, :float
