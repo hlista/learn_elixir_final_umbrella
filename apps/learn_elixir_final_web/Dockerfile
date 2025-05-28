@@ -46,4 +46,9 @@ COPY --from=builder /app/_build/prod/rel/learn_elixir_final_web ./
 RUN chmod +x bin/learn_elixir_final_web
 # COPY --from=builder /app/apps/learn_elixir_final/entrypoint.sh /entrypoint.sh
 # RUN chmod +x /entrypoint.sh
-CMD ["/app/bin/server"]
+ENV PORT=4000
+EXPOSE 4000
+
+ENV PHX_SERVER=true
+ENTRYPOINT ["/app/bin/learn_elixir_final_web"]
+CMD ["start"]
