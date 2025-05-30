@@ -8,6 +8,7 @@ services:
       RELEASE_COOKIE: "secret_cookie"
       DATABASE_URL: postgresql://postgres:postgres@db:5432/learn_elixir_final_pg_prod
       SECRET_KEY_BASE: ixIrw6yknrGn9VqwuV6CGAoAukYM0f7fVxlP64Ghw5fvPfFOhoI9OuKzPo6ylv1H
+      RELEASE_NODE: "learn_elixir_final"
     hostname: service
     depends_on:
       - db
@@ -22,6 +23,7 @@ services:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/learn_elixir_final_pg_prod
       RELEASE_COOKIE: "secret_cookie"
       SECRET_KEY_BASE: ixIrw6yknrGn9VqwuV6CGAoAukYM0f7fVxlP64Ghw5fvPfFOhoI9OuKzPo6ylv1H
+      RELEASE_NODE: "learn_elixir_final_web"
     hostname: web
     ports:
       - "4000:4000"

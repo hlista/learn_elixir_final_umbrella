@@ -40,7 +40,7 @@ config :learn_elixir_final, Oban,
 
 config :learn_elixir_final, :erpc_client, ErpcProxy
 
-config :riot_client, :riot_api_key, "RGAPI-7e3d4caf-685b-4042-9308-926223949ac7"
+config :riot_client, :riot_api_key, "RGAPI-fd8e8601-33a9-4084-bc04-4d21405dd8d5"
 config :riot_client, :http_client, RiotClient.RealHttpClient
 # Configures the mailer
 #

@@ -13,11 +13,7 @@ config :learn_elixir_final_pg, LearnElixirFinalPg.Repo,
 config :libcluster,
   topologies: [
     local: [
-      strategy: Cluster.Strategy.Epmd,
-      config: [hosts: [
-        :"learn_elixir_final@localhost",
-        :"learn_elixir_final_web@localhost"
-      ]],
+      strategy: Cluster.Strategy.Gossip,
     ]
   ]
 # For development, we disable any cache and enable

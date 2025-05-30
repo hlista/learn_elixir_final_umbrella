@@ -4,7 +4,7 @@ defmodule LearnElixirFinalWeb.Subscription.Janitor do
     Presence,
     Tracker
   }
-  @interval :timer.seconds(30)
+  @interval :timer.seconds(10)
 
   def start_link(_), do: GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
 

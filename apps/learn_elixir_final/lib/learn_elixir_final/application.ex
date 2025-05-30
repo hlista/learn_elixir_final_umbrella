@@ -11,7 +11,7 @@ defmodule LearnElixirFinal.Application do
       {
         Cluster.Supervisor,
         [Application.get_env(:libcluster, :topologies),
-        [name: LearnElixirFinalWeb.ClusterSupervisor]]
+        [name: LearnElixirFinal.ClusterSupervisor]]
       },
       {PrometheusTelemetry,
         exporter: [enabled?: true],
