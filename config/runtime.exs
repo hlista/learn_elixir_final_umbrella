@@ -37,6 +37,7 @@ if config_env() == :prod do
       """
 
   config :learn_elixir_final_web, LearnElixirFinalWeb.Endpoint,
+    url: [host: "localhost", port: 4000],
     http: [
       # Enable IPv6 and bind on all interfaces.
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.

@@ -37,8 +37,6 @@ defmodule LearnElixirFinal.MixProject do
   defp deps do
     [
       {:dns_cluster, "~> 0.1.1"},
-      {:ecto_sql, "~> 3.10"},
-      {:postgrex, ">= 0.0.0"},
       {:jason, "~> 1.2"},
       {:swoosh, "~> 1.5"},
       {:finch, "~> 0.13"},
