@@ -13,7 +13,15 @@ defmodule LearnElixirFinal.Application do
         [Application.get_env(:libcluster, :topologies),
         [name: LearnElixirFinalWeb.ClusterSupervisor]]
       },
-      LearnElixirFinal.Telemetry,
+      {PrometheusTelemetry,
+        exporter: [enabled?: true],
+        metrics: [
+          PrometheusTelemetry.Metrics.Ecto.metrics_for_repo(LearnElixirFinalPg.Repo),
+          PrometheusTelemetry.Metrics.Finch.metrics(),
+          PrometheusTelemetry.Metrics.Oban.metrics(),
+          PrometheusTelemetry.Metrics.VM.metrics()
+        ]
+      },
       # {DNSCluster, query: Application.get_env(:learn_elixir_final, :dns_cluster_query) || :ignore},
       # {Phoenix.PubSub, name: LearnElixirFinal.PubSub},
       LearnElixirFinalPg.Repo,

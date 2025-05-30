@@ -7,9 +7,9 @@ defmodule AuthService.SignUp do
 
  end
 
- def change_user_registration(%User{}) do
+#  def change_user_registration(%User{}) do
 
- end
+#  end
 
  def change_user_registration(user) do
 

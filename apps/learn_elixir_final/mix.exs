@@ -47,8 +47,7 @@ defmodule LearnElixirFinal.MixProject do
       {:libcluster, "~> 3.3"},
       {:erpc_proxy, in_umbrella: true},
       {:inflex, "~> 2.0.0", only: :test},
-      {:telemetry_metrics, "~> 1.0"},
-      {:telemetry_poller, "~> 1.0"},
+      {:prometheus_telemetry, "~> 0.4"},
     ]
   end
 
