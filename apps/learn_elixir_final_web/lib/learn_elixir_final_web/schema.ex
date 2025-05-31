@@ -16,7 +16,10 @@ defmodule LearnElixirFinalWeb.Schema do
     LeagueAccount,
     User
   }
-  import_types LearnElixirFinalWeb.Schema.Subscriptions.User
+  import_types LearnElixirFinalWeb.Schema.Subscriptions.{
+    LeagueAccount,
+    User
+  }
   query do
     import_fields :user_queries
   end
@@ -26,6 +29,7 @@ defmodule LearnElixirFinalWeb.Schema do
   end
   subscription do
     import_fields :user_subscriptions
+    import_fields :league_account_subscriptions
   end
 
   def context(ctx) do

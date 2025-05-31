@@ -119,8 +119,8 @@ defmodule LearnElixirFinal.LeagueEventWorker do
           "user_id" => user_id
         }
       }) do
-    with {:ok, _} <- AggregateUserMatchesEvent.update_user_match_aggregate(user_id) do
-      LearnElixirFinalWebProxy.publish(%{}, :user_match_added, "user_match_added:#{user_id}")
+    with {:ok, match_aggregate} <- AggregateUserMatchesEvent.update_user_match_aggregate(user_id) do
+      LearnElixirFinalWebProxy.publish(match_aggregate, :user_match_added, "user_match_added:#{user_id}")
       :ok
     end
   end
@@ -132,16 +132,15 @@ defmodule LearnElixirFinal.LeagueEventWorker do
           "league_account_id" => league_account_id
         }
       }) do
-    with {:ok, _} <-
+    with {:ok, match_aggregate} <-
            AggregateLeagueAccountMatchesEvent.update_league_account_match_aggregate(
              league_account_id
            ) do
       LearnElixirFinalWebProxy.publish(
-        %{},
+        match_aggregate,
         :league_account_match_added,
-        "league_account_match_added:#{league_account_id}"
+        "league_account_match_added:league_account_id:#{league_account_id}"
       )
-
       :ok
     end
   end
