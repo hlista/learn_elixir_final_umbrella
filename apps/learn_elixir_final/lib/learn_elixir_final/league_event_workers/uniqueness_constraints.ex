@@ -1,4 +1,4 @@
-defmodule LearnElixirFinal.LeagueEventWorker.UniquenessConstraints do
+defmodule LearnElixirFinal.LeagueEventWorkers.UniquenessConstraints do
   @user_match_listening_event_uniqueness [
     period: {2, :minutes},
     timestamp: :scheduled_at,

@@ -1,8 +1,44 @@
-defmodule LearnElixirFinal.LeagueEventWorker.AggregateUserMatchesEvent do
+defmodule LearnElixirFinal.LeagueEventWorkers.AggregateUserMatches do
+  use Oban.Worker,
+  worker: __MODULE__,
+  queue: :league_match_aggregate,
+  unique: [
+    period: {2, :minutes},
+    timestamp: :scheduled_at,
+    keys: [:user_id],
+    fields: [:worker, :args]
+  ],
+  max_attempts: 5
   alias LearnElixirFinalPg.{
     Accounts,
     League
   }
+  alias LearnElixirFinal.LearnElixirFinalWebProxy
+
+  @impl Oban.Worker
+  def perform(%Oban.Job{
+        args: %{
+          "user_id" => user_id
+        }
+      }) do
+    with {:ok, match_aggregate} <-
+           update_user_match_aggregate(
+             user_id
+           ) do
+      LearnElixirFinalWebProxy.publish(match_aggregate, :user_match_added, "user_match_added:#{user_id}")
+      :ok
+    end
+  end
+
+  def bulk_queue_events(users) do
+    Enum.each(users, fn user ->
+      %{
+        user_id: user.id
+      }
+      |> Oban.Job.new()
+      |> Oban.insert()
+    end)
+  end
 
   def calculate_average(match_participants, :win = field) do
     total_participants = length(match_participants)

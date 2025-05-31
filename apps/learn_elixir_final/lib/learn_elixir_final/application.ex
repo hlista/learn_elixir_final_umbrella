@@ -17,7 +17,7 @@ defmodule LearnElixirFinal.Application do
         exporter: [enabled?: true],
         metrics: [
           PrometheusTelemetry.Metrics.Ecto.metrics_for_repo(LearnElixirFinalPg.Repo),
-          PrometheusTelemetry.Metrics.Finch.metrics(),
+          #PrometheusTelemetry.Metrics.Finch.metrics(),
           PrometheusTelemetry.Metrics.Oban.metrics(),
           PrometheusTelemetry.Metrics.VM.metrics()
         ]

@@ -1,5 +1,53 @@
-defmodule LearnElixirFinal.LeagueEventWorker.AggregateLeagueAccountMatchesEvent do
+defmodule LearnElixirFinal.LeagueEventWorkers.AggregateLeagueAccountMatches do
+  use Oban.Worker,
+    worker: __MODULE__,
+    queue: :league_match_aggregate,
+    unique: [
+      period: {2, :minutes},
+      timestamp: :scheduled_at,
+      keys: [:league_account_id],
+      fields: [:worker, :args]
+    ]
+
   alias LearnElixirFinalPg.League
+  alias LearnElixirFinal.LearnElixirFinalWebProxy
+
+  @impl Oban.Worker
+  def perform(%Oban.Job{
+        args: %{
+          "league_account_id" => league_account_id,
+          "puuid" => puuid
+        }
+      }) do
+    with {:ok, match_aggregate} <-
+           update_league_account_match_aggregate(
+             league_account_id
+           ) do
+      LearnElixirFinalWebProxy.publish(
+        match_aggregate,
+        :league_account_match_added,
+        "league_account_match_added:league_account_id:#{league_account_id}"
+      )
+
+      LearnElixirFinalWebProxy.publish(
+        match_aggregate,
+        :league_account_match_added,
+        "league_account_match_added:puuid:#{puuid}"
+      )
+      :ok
+    end
+  end
+
+  def bulk_queue_events(league_accounts) do
+    Enum.each(league_accounts, fn league_account ->
+      %{
+        league_account_id: league_account.id,
+        puuid: league_account.puuid
+      }
+      |> Oban.Job.new()
+      |> Oban.insert()
+    end)
+  end
 
   def calculate_average(match_participants, :win = field) do
     total_participants = length(match_participants)

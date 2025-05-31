@@ -2,14 +2,14 @@ defmodule LearnElixirFinal.LeagueEventWorker do
   use Oban.Worker,
     max_attempts: 5
 
-  alias LearnElixirFinal.LeagueEventWorker.{
-    AggregateLeagueAccountMatchesEvent,
-    AggregateUserMatchesEvent,
-    LeagueAccountMatchListeningEvent,
-    LeagueMatchFoundEvent,
-    LeagueMatchParticipantFoundEvent,
+  alias LearnElixirFinal.LeagueEventWorkers.{
+    AggregateLeagueAccountMatches,
+    AggregateUserMatches,
+    LeagueAccountMatchListening,
+    LeagueMatchFound,
+    LeagueMatchParticipantFound,
     UniquenessConstraints,
-    UserMatchListeningEvent,
+    UserMatchListening,
   }
 
   alias LearnElixirFinal.{
@@ -32,7 +32,7 @@ defmodule LearnElixirFinal.LeagueEventWorker do
           "user_id" => user_id
         }
       }) do
-    case UserMatchListeningEvent.find_user_league_accounts(user_id) do
+    case UserMatchListening.find_user_league_accounts(user_id) do
       {:ok, league_accounts} ->
         bulk_queue_league_account_match_listening_event(league_accounts)
       {:error, %ErrorMessage{code: :not_found}} ->
@@ -53,7 +53,7 @@ defmodule LearnElixirFinal.LeagueEventWorker do
       puuid: params["puuid"]
     }
     params = Map.filter(params, & elem(&1, 1))
-    case LeagueAccountMatchListeningEvent.find_league_account_matches(params) do
+    case LeagueAccountMatchListening.find_league_account_matches(params) do
       {:ok, %{
         match_ids: match_ids,
         league_account: league_account
@@ -76,7 +76,7 @@ defmodule LearnElixirFinal.LeagueEventWorker do
           "region" => region
         }
       }) do
-    case LeagueMatchFoundEvent.maybe_create_league_match(match_id, region) do
+    case LeagueMatchFound.maybe_create_league_match(match_id, region) do
       {:ok, %{match_participants_info: match_participants_info}} ->
         bulk_queue_league_match_participant_found_event(match_participants_info, region)
       {:error, "Invalid Api Key"} ->
@@ -103,7 +103,7 @@ defmodule LearnElixirFinal.LeagueEventWorker do
             users: users,
             league_accounts: league_accounts
           }} <-
-           LeagueMatchParticipantFoundEvent.maybe_create_league_match_participant(
+           LeagueMatchParticipantFound.maybe_create_league_match_participant(
              league_match_participant_info
            ) do
       bulk_queue_aggregate_user_matches_event(users)
@@ -119,7 +119,7 @@ defmodule LearnElixirFinal.LeagueEventWorker do
           "user_id" => user_id
         }
       }) do
-    with {:ok, match_aggregate} <- AggregateUserMatchesEvent.update_user_match_aggregate(user_id) do
+    with {:ok, match_aggregate} <- AggregateUserMatches.update_user_match_aggregate(user_id) do
       LearnElixirFinalWebProxy.publish(match_aggregate, :user_match_added, "user_match_added:#{user_id}")
       :ok
     end
@@ -133,7 +133,7 @@ defmodule LearnElixirFinal.LeagueEventWorker do
         }
       }) do
     with {:ok, match_aggregate} <-
-           AggregateLeagueAccountMatchesEvent.update_league_account_match_aggregate(
+           AggregateLeagueAccountMatches.update_league_account_match_aggregate(
              league_account_id
            ) do
       LearnElixirFinalWebProxy.publish(

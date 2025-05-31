@@ -1,5 +1,58 @@
-defmodule LearnElixirFinal.LeagueEventWorker.LeagueMatchFoundEvent do
+defmodule LearnElixirFinal.LeagueEventWorkers.LeagueMatchFound do
+  use Oban.Worker
+
+  @default_job_params [
+    worker: __MODULE__,
+    unique: [
+      period: {2, :minutes},
+      timestamp: :scheduled_at,
+      keys: [:match_id],
+      fields: [:worker, :args]
+    ]
+  ]
   alias LearnElixirFinalPg.League
+  alias LearnElixirFinal.LeagueEventWorkers.LeagueMatchParticipantFound
+
+  @impl Oban.Worker
+  def perform(%Oban.Job{
+        args: %{
+          "match_id" => match_id,
+          "region" => region
+        }
+      }) do
+    case maybe_create_league_match(match_id, region) do
+      {:ok, %{match_participants_info: match_participants_info}} ->
+        LeagueMatchParticipantFound.bulk_queue_events(match_participants_info, region)
+      {:error, "Invalid Api Key"} ->
+        {:ok, "Api Key expired"}
+      {:error, "resource not found"} ->
+        {:ok, "Match does not exist"}
+      e -> e
+    end
+  end
+
+  def bulk_queue_events(match_ids, region) do
+    Enum.each(match_ids, fn match_id ->
+      params = [%{
+        match_id: match_id,
+        region: region
+      },
+      queue: get_region_queue(region)] ++ @default_job_params
+      params
+      |> Oban.Job.new()
+      |> Oban.insert()
+    end)
+  end
+
+  defp get_region_queue(region) do
+    case region do
+      "americas" -> :league_match_found_americas
+      "europe" -> :league_match_found_europe
+      "asia" -> :league_match_found_asia
+      "sea" -> :league_match_found_sea
+      _ -> :league_match_found
+    end
+  end
 
   def maybe_create_league_match(match_id, region) do
     case League.find_league_match(%{match_id: match_id}) do
