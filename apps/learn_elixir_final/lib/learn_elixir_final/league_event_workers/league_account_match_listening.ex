@@ -132,11 +132,20 @@ defmodule LearnElixirFinal.LeagueEventWorkers.LeagueAccountMatchListening do
   def find_league_account_matches(league_account_params) when map_size(league_account_params) != 0 do
     with {:ok, league_account} <- find_or_create_league_account(league_account_params),
          {:ok, match_ids} <- RiotClient.get_account_match_ids(league_account.puuid, league_account.match_offset, 5, league_account.match_region),
-         {:ok, _} <- League.update_league_account(league_account, %{match_offset: league_account.match_offset + length(match_ids)}) do
+         {:ok, _} <- League.update_league_account(league_account, %{match_offset: calculate_new_match_offset(league_account.match_offset, length(match_ids))}) do
            {:ok, %{
             match_ids: match_ids,
             league_account: league_account
            }}
+    end
+  end
+
+  defp calculate_new_match_offset(curr_match_offset, new_match_count) do
+    new_match_offset = curr_match_offset + new_match_count
+    if new_match_offset >= 30 do
+      0
+    else
+      new_match_offset
     end
   end
 
