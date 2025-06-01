@@ -1,8 +1,9 @@
 defmodule LearnElixirFinal do
   alias LearnElixirFinalPg.Accounts
-  alias LearnElixirFinal.{
-    LeagueAccount,
-    LeagueEventWorker
+  alias LearnElixirFinal.LeagueAccount
+  alias LearnElixirFinal.LeagueEventWorkers.{
+    LeagueAccountMatchListening,
+    UserMatchListening
   }
 
   # Handle League Account
@@ -13,8 +14,8 @@ defmodule LearnElixirFinal do
   defdelegate remove_user_league_account(user_id, puuid), to: LeagueAccount
 
   # Queue Events
-  defdelegate queue_league_account_match_listening_event(params), to: LeagueEventWorker
-  defdelegate queue_user_match_listening_event(user_id), to: LeagueEventWorker
+  defdelegate queue_league_account_match_listening_event(params), to: LeagueAccountMatchListening, as: :queue_event
+  defdelegate queue_user_match_listening_event(user_id), to: UserMatchListening, as: :queue_event
 
   ### Deliver Emails
   def deliver_user_confirmation_instructions(user, url) do

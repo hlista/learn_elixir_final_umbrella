@@ -6,9 +6,10 @@ defmodule LearnElixirFinal.LeagueEventWorkers.UserMatchListeningTest do
 
   setup :set_mox_from_context
 
-  alias LearnElixirFinal.LeagueEventWorkers.UserMatchListening
-
-  @riot_api_key Application.compile_env(:riot_client, :riot_api_key)
+  alias LearnElixirFinal.LeagueEventWorkers.{
+    UserMatchListening,
+    LeagueAccountMatchListening
+  }
 
   describe "@queue_event/1" do
     test "queue event assert" do
@@ -31,4 +32,48 @@ defmodule LearnElixirFinal.LeagueEventWorkers.UserMatchListeningTest do
     end
   end
 
+  describe "perform user match listening event" do
+    setup do
+      user_with_league_accounts = insert(:user, %{league_accounts: [build(:league_account), build(:league_account)]})
+      user_without_league_accounts = insert(:user)
+      %{
+        user_with_league_accounts: user_with_league_accounts,
+        user_without_league_accounts: user_without_league_accounts
+      }
+    end
+    test "user with league accounts", %{user_with_league_accounts: user} do
+      perform_job(
+        UserMatchListening,
+        %{
+          user_id: user.id
+        }, queue: :league_listening
+      )
+      league_accounts = user.league_accounts
+      Enum.each(league_accounts,
+          &assert_enqueued(
+            worker: LeagueAccountMatchListening,
+            args: %{league_account_id: &1.id}
+          )
+      )
+    end
+    test "user with no league accounts", %{user_without_league_accounts: user} do
+      perform_job(
+        UserMatchListening,
+        %{
+          user_id: user.id
+        }, queue: :league_listening
+      )
+      jobs = all_enqueued(worker: LeagueAccountMatchListening)
+      assert true == Enum.empty?(jobs)
+    end
+
+    test "user does not exist" do
+      assert {:ok, "User does not exist"} = perform_job(
+        UserMatchListening,
+        %{
+          user_id: 0
+        }, queue: :league_listening
+      )
+    end
+  end
 end

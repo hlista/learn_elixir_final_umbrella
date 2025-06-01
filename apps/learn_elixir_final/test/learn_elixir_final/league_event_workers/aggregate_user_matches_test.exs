@@ -8,8 +8,6 @@ defmodule LearnElixirFinal.LeagueEventWorkers.AggregateUserMatchesTest do
 
   alias LearnElixirFinal.LeagueEventWorkers.AggregateUserMatches
 
-  @riot_api_key Application.compile_env(:riot_client, :riot_api_key)
-
   describe "@bulk_queue_events/2" do
     test "queue event assert" do
       AggregateUserMatches.bulk_queue_events([%{id: 2}, %{id: 3}])
@@ -22,6 +20,29 @@ defmodule LearnElixirFinal.LeagueEventWorkers.AggregateUserMatchesTest do
       AggregateUserMatches.bulk_queue_events(users)
       jobs = all_enqueued(worker: AggregateUserMatches)
       assert 1 == length(jobs)
+    end
+  end
+
+  describe "perform aggregate_user_matches_event" do
+    setup do
+      user = insert(:user, league_accounts: [build(:league_account, match_participants: [build(:match_participant)])])
+      %{
+        user: user
+      }
+    end
+    test "test", %{user: user} do
+      expect(
+        ErpcClientMock, :call_on_random_node,
+          fn _, Absinthe.Subscription, _, _ ->
+            :ok
+          end
+        )
+      assert :ok = perform_job(
+        AggregateUserMatches,
+        %{
+          user_id: user.id
+        }, queue: :league_aggregate
+      )
     end
   end
 end
