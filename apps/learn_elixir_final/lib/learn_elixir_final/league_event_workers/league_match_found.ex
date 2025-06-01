@@ -2,13 +2,13 @@ defmodule LearnElixirFinal.LeagueEventWorkers.LeagueMatchFound do
   use Oban.Worker
 
   @default_job_params [
-    worker: __MODULE__,
     unique: [
       period: {2, :minutes},
       timestamp: :scheduled_at,
       keys: [:match_id],
       fields: [:worker, :args]
-    ]
+    ],
+    worker: __MODULE__
   ]
   alias LearnElixirFinalPg.League
   alias LearnElixirFinal.LeagueEventWorkers.LeagueMatchParticipantFound
@@ -33,13 +33,13 @@ defmodule LearnElixirFinal.LeagueEventWorkers.LeagueMatchFound do
 
   def bulk_queue_events(match_ids, region) do
     Enum.each(match_ids, fn match_id ->
-      params = [%{
+      params = %{
         match_id: match_id,
         region: region
-      },
-      queue: get_region_queue(region)] ++ @default_job_params
+      }
+      opts = [queue: get_region_queue(region)] ++ @default_job_params
       params
-      |> Oban.Job.new()
+      |> Oban.Job.new(opts)
       |> Oban.insert()
     end)
   end

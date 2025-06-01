@@ -44,12 +44,13 @@ defmodule LearnElixirFinal.LeagueEventWorkers.LeagueMatchParticipantFound do
 
   def bulk_queue_events(participants_info, region) do
     Enum.each(participants_info, fn participant_info ->
-      params = [%{
+      params = %{
         participant: participant_info,
-        region: region,
-      }, queue: get_region_queue(region)] ++ @default_job_params
+        region: region
+      }
+      opts = [queue: get_region_queue(region)] ++ @default_job_params
       params
-      |> Oban.Job.new()
+      |> Oban.Job.new(opts)
       |> Oban.insert()
     end)
   end

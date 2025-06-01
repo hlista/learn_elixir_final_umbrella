@@ -1,6 +1,5 @@
 defmodule LearnElixirFinal.LeagueEventWorkers.UserMatchListening do
   use Oban.Worker,
-  worker: __MODULE__,
   queue: :league_listening,
   unique: [
     period: {2, :minutes},
@@ -27,11 +26,11 @@ defmodule LearnElixirFinal.LeagueEventWorkers.UserMatchListening do
     end
   end
 
-  def queue_user_match_listening_event(user_id) do
+  def queue_event(user_id) do
     %{
       user_id: user_id
     }
-    |> Oban.Job.new()
+    |> __MODULE__.new()
     |> Oban.insert()
   end
 

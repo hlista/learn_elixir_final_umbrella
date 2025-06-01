@@ -1,6 +1,5 @@
 defmodule LearnElixirFinal.LeagueEventWorkers.AggregateUserMatches do
   use Oban.Worker,
-  worker: __MODULE__,
   queue: :league_match_aggregate,
   unique: [
     period: {2, :minutes},
@@ -35,7 +34,7 @@ defmodule LearnElixirFinal.LeagueEventWorkers.AggregateUserMatches do
       %{
         user_id: user.id
       }
-      |> Oban.Job.new()
+      |> __MODULE__.new()
       |> Oban.insert()
     end)
   end
